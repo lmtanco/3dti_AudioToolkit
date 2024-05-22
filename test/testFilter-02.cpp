@@ -21,9 +21,10 @@ int main()
     // Create a BiQuadFilter
     Common::CBiquadFilter filter;
     auto fs = SAMPLINGFREQ;
-    auto fc = 1000;
-    auto Q = 0.707;
-    filter.Setup(fs, fc, Q, Common::T_filterType::LOWPASS);
+    auto fc = 5000;
+    auto Q = 10;
+    auto Gain = 0.1;
+    filter.Setup(fs, fc, Q, Common::T_filterType::PEAKNOTCH, Gain);
 
     
     // Filter the input with the filter;
@@ -38,7 +39,7 @@ int main()
     // Save the vectors.
     {
             //Saving to file
-            matioCpp::File file = matioCpp::File::Create("test1-lowpass.mat"); //Create a new file called "test.mat"
+            matioCpp::File file = matioCpp::File::Create("test2-peaknotch.mat"); //Create a new file called "test.mat"
             //Saving to file
             file.write(vector_in);
             file.write(vector_out);
