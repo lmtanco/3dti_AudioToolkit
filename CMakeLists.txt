@@ -27,4 +27,8 @@ target_link_libraries(test01
     PRIVATE threedti-common
     PRIVATE matioCpp::matioCpp)
 
-
+# Add the test02 executable
+add_executable(test02 test/testFilter-02.cpp)
+target_link_libraries(test02 
+    PRIVATE threedti-common
+    PRIVATE matioCpp::matioCpp)
