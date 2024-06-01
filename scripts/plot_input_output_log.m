@@ -1,3 +1,5 @@
+function plot_input_output_log(input_vector, output_vector)
+
 % Sampling frequency
 fs = 48000; % in Hz
 
@@ -6,7 +8,7 @@ input_fft = fft(input_vector);
 output_fft = fft(output_vector);
 
 % Frequency axis for the FFT plots (up to Nyquist frequency)
-n = length(input_vector);
+n = length(input_vector)
 frequencies = (0:n-1)*(fs/n);
 
 % Magnitude of the FFT (up to Nyquist frequency)
@@ -45,13 +47,14 @@ xticklabels({'', '10', '100', '1000', '10000', num2str(fs/2)});
 % Plot FFT of output_vector in the bottom-right subplot
 subplot(2, 2, 4); % 2 rows, 2 columns, fourth subplot
 semilogx(frequencies, output_fft_magnitude, 'LineWidth', 2.5);
+%plot(frequencies, output_fft_magnitude, 'LineWidth', 2.5);  
 title('FFT of Output Vector');
 xlabel('Frequency (Hz - Log Scale)');
 ylabel('Magnitude ');
 xlim([0 fs/2]); % Limit the x-axis to the Nyquist frequency
 
 % Customize x-axis ticks and labels for better readability
-xticks([0, 10, 100, 1000, 10000, fs/2]);
-xticklabels({'', '10', '100', '1000', '10000', num2str(fs/2)});
+%xticks([0, 10, 100, 1000, 10000, fs/2]);
+%xticklabels({'', '10', '100', '1000', '10000', num2str(fs/2)});
 
 
