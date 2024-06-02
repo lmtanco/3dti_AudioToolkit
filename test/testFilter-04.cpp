@@ -29,19 +29,19 @@ int main(int argc, char* argv[])
         std::cout << "Using gain from command line: " << Gain << "\n";
     }
     
-    filter.Setup(fs, fc, Q, Common::T_filterType::PEAKNOTCH, Gain);
+    filter.Setup(fs, fc, Q, Common::T_filterType::LOWSHELF, Gain);
     
     // Filter the input with the filter;
     filter.Process(inputBuffer, outputBuffer);
     
     // Declare a Matio vector
-    matioCpp::Vector<float> vector_out("output_vector_peaknotch");
+    matioCpp::Vector<float> vector_out("output_vector_lowshelf");
     vector_out = outputBuffer;
     
     // Save the vectors.
     {
             //Saving to file
-            matioCpp::File file = matioCpp::File::Create("test3-peaknotch.mat"); //Create a new file called "test.mat"
+            matioCpp::File file = matioCpp::File::Create("test4-lowshelf.mat"); //Create a new file called "test.mat"
             file.write(vector_out);
     }
 
