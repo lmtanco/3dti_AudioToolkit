@@ -22,7 +22,7 @@ target_include_directories(threedti-common
 find_package(matioCpp REQUIRED)
 
 # Declare a list of executables
-set(TESTS 01 02 03 04)  
+set(TESTS 01 02 03 04 05)  
 
 foreach(TEST ${TESTS})
     add_executable(test${TEST} test/testFilter-${TEST}.cpp)  # Añade el ejecutable
@@ -30,21 +30,3 @@ foreach(TEST ${TESTS})
         PRIVATE threedti-common
         PRIVATE matioCpp::matioCpp)  # Enlaza las bibliotecas
 endforeach()
-
-# # Add the test01 executable 
-# add_executable(test01 test/testFilter-01.cpp)
-# target_link_libraries(test01 
-#     PRIVATE threedti-common
-#     PRIVATE matioCpp::matioCpp)
-
-# # # Add the test02 executable
-# add_executable(test02 test/testFilter-02.cpp)
-# target_link_libraries(test02 
-#     PRIVATE threedti-common
-#     PRIVATE matioCpp::matioCpp)
-
-# # Add the test03 executable
-# add_executable(test03 test/testFilter-03.cpp)
-# target_link_libraries(test03 
-#     PRIVATE threedti-common
-#     PRIVATE matioCpp::matioCpp)
