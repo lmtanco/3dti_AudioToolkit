@@ -1,7 +1,7 @@
 #include <Common/BiquadFilter.h>
 #include <matioCpp/matioCpp.h>
 
-#define BUFFERSIZE 1024
+#define BUFFERSIZE 16384
 #define SAMPLINGFREQ 48000
 
 
@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
     // Create a BiQuadFilter
     Common::CBiquadFilter filter;
     double fs = SAMPLINGFREQ;
-    double fc = 2000;
+    double fc = 31.5;
     double Q = 1.4;
     // Get gain from the command line
     double Gain = 10.0;
@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
         std::cout << "Using gain from command line: " << Gain << "\n";
     }
     
-    filter.Setup(fs, fc, Q, Common::T_filterType::LOWSHELF, Gain);
+    filter.Setup(fs, fc*std::sqrt(Q), Q, Common::T_filterType::LOWSHELF, Gain);
     
     // Filter the input with the filter;
     filter.Process(inputBuffer, outputBuffer);
