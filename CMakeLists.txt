@@ -22,7 +22,7 @@ target_include_directories(threedti-common
 find_package(matioCpp REQUIRED)
 
 # Declare a list of executables
-set(TESTS 01 02 03 04 05)  
+set(TESTS 01 02 03 04 05 06)  
 
 foreach(TEST ${TESTS})
     add_executable(test${TEST} test/testFilter-${TEST}.cpp)  # Añade el ejecutable

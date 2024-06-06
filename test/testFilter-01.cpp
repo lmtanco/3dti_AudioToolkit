@@ -1,7 +1,7 @@
 #include <Common/BiquadFilter.h>
 #include <matioCpp/matioCpp.h>
 
-#define BUFFERSIZE 1024
+#define BUFFERSIZE 16384
 #define SAMPLINGFREQ 48000
 
 
