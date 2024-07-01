@@ -1,7 +1,7 @@
 #include <Common/CascadeGraphicEq9OctaveBands.h>
 #include <matioCpp/matioCpp.h>
 
-#define BUFFERSIZE 16384
+#define BUFFERSIZE 32768
 #define SAMPLINGFREQ 48000
 
 
@@ -21,10 +21,27 @@ int main(int argc, char* argv[])
     
     // Create a CascadeGraphicEq9OctaveBands
     //std::vector<float> gains = { 10, 10, 10, 10, 10, 10, 10, 10, 10 };
-    // Use 0.7071 for the gains
-    //std::vector<float> gains = { 0.7071, 0.7071, 0.7071, 0.7071, 0.7071, 0.7071, 0.7071, 0.7071, 0.7071 }; 
-    std::vector<float> gains = {3.1623, 3.1623, 3.1623, 3.1623, 3.1623, 3.1623, 3.1623, 3.1623, 3.1623};
-    Common::CascadeGraphicEq9OctaveBands filter(gains);
+
+    // Create some random gains of values 0.7071 plus or minus 0.25
+    //std::vector<float> gains = { 0.7071, 0.4571, 0.957, 0.5571, 0.1571, 0.8071, 0.6071, 0.3071, 0.1071 };
+
+    // Create gains from 0.9 down and back up to 0.9 so that the average is 0.9
+    //std::vector<float> gains = {0.9,0.7,0.5,0.3,0.1,0.3,0.5,0.7,0.9};
+    std::vector<float> gains = {0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0};
+
+    // // Range for 
+    for (auto &gain : gains) {
+        gain *= 10.0;
+    }
+ 
+    //std::vector<float> gains = { 0.7071, 0.7071, 0.7071, 0.7071, 0.7071, 0.7071, 0.7071, 0.7071, 0.7071 };
+    // Use 10 dB gains which are 3.1623 in linear scale 
+    //std::vector<float> gains = {3.1623, 3.1623, 3.1623, 3.1623, 3.1623, 3.1623, 3.1623, 3.1623, 3.1623};
+   
+    // Testing the filter with the ReduceRipple flag set to true
+    //constexpr bool ReduceRipple = false;
+    //Common::CascadeGraphicEq9OctaveBands<ReduceRipple> filter(gains);
+    Common::CascadeGraphicEq9OctaveBandsReduceRipple filter(gains);
     
     // Filter the input with the filter;
     filter.Process(inputBuffer);

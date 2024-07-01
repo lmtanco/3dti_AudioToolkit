@@ -38,7 +38,7 @@ if linear
     output_fft_magnitude_band5 = abs(output_fft_band5);
     output_fft_magnitude_band6 = abs(output_fft_band6);
     output_fft_magnitude_band7 = abs(output_fft_band7);
-    mylabel = 'Magnitude';
+    mylabel = 'Magnitude (Linear)';
 else
     % display message using logarithmic scale
     disp("Using logarithmic scale")
@@ -79,11 +79,22 @@ semilogx(frequencies, output_fft_magnitude_band6, 'LineWidth', 2.5, 'Color', 'r'
 hold on;
 semilogx(frequencies, output_fft_magnitude_band7, 'LineWidth', 2.5, 'Color', 'g');
 
-legend( 'Total', 'Lowshelf', 'Highshelf', 'Band1', 'Band2', 'Band3', 'Band4', 'Band5', 'Band6', 'Band7', 'Location', 'southeast');
+
+legend( 'Total', 'Lowshelf', 'Highshelf', 'Band1', 'Band2', 'Band3', 'Band4', 'Band5', 'Band6', 'Band7', 'REF', 'Location', 'northwest');
 title('FFT of Output Vectors');
 xlabel('Frequency (Hz - Log Scale)');
 ylabel(mylabel);
 xlim([0 fs/2]); % Limit the x-axis to the Nyquist frequency
 xticks([0, 10, 100, 1000, 10000, fs/2]);
 xticklabels({'', '10', '100', '1000', '10000', num2str(fs/2)});
+
+% if in DB , add 'dB' to the y tick labels
+if ~linear
+    yticks = get(gca, 'ytick');
+    yticklabels = cellstr(num2str(yticks(:)));
+    for i = 1:length(yticklabels)
+        yticklabels{i} = [yticklabels{i} ' dB'];
+    end
+    set(gca, 'yticklabel', yticklabels);
+end
 
