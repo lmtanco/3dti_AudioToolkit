@@ -78,7 +78,7 @@ find_package(matioCpp REQUIRED)
 set(TESTS 01 02 03 04 05 06)  
 
 foreach(TEST ${TESTS})
-    add_executable(test${TEST} test/testFilter-${TEST}.cpp)  # Añade el ejecutable
+    add_executable(test${TEST} test/01_filters/testFilter-${TEST}.cpp)  # Añade el ejecutable
     target_link_libraries(test${TEST} 
         PRIVATE threedti-common
         PRIVATE matioCpp::matioCpp)  # Enlaza las bibliotecas
@@ -89,7 +89,7 @@ find_package(RtAudio REQUIRED)
 
 
 # Declare tests for Binaural spatialization. 
-add_executable(testBinauralSpatializer test/testBinauralSpatializer.cpp)
+add_executable(testBinauralSpatializer test/02_binaural/testBinauralSpatializer.cpp)
 target_link_libraries(testBinauralSpatializer 
     PRIVATE threedti-common
     PRIVATE threedti-binaural
