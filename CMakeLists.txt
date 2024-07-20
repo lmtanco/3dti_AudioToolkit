@@ -120,6 +120,8 @@ add_executable(testISM test/03_ISM/testISM.cpp)
 target_link_libraries(testISM 
     PRIVATE threedti-ism
     PRIVATE threedti-hrtf
-    PRIVATE threedit-brir
+    #PRIVATE threedit-brir
     PRIVATE pugixml::pugixml
-    PRIVATE RtAudio::rtaudio )  # Enlaza las bibliotecas
+    PRIVATE matioCpp::matioCpp
+    #PRIVATE RtAudio::rtaudio 
+    )  # Enlaza las bibliotecas
