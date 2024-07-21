@@ -11,12 +11,8 @@ namespace fs = std::filesystem;
 #define BUFFERSIZE 32768
 #define SOFAFILE "HRTF/SOFA/HRTF_SADIE_II_D1_44100_24bit_256tap_FIR_SOFA_aligned.sofa"
 #define ROOMFILE "ISM/XML/trapezoidal_1_A1.xml"
-
-#define LENGTH_OF_NORMALS 0.2
-#define DEFAULT_SCALE 20
 #define INITIAL_REFLECTION_ORDER 3
 #define INITIAL_DIST_SILENCED_FRAMES  1000
-#define FRAME_RATE 60
 
 /// 3dti Toolkit 
 Binaural::CCore							myCore;				 // Core interface
@@ -87,7 +83,7 @@ void setup()
     // 3dti Listener
     Common::CVector3 listenerPosition = {-0.45, 0.02, -0.68};
     Common::CTransform listenerTransform; 
-    listenerTransform.SetPosition(listenerPosition);
+    listenerTransform.SetPosition(listenerPosition);   
     listener->SetListenerTransform(listenerTransform);
     listener->DisableCustomizedITD(); // Disable customized head radius
     fs::path sofaPath = currentPath / SOFAFILE;
@@ -115,12 +111,15 @@ void setup()
 
     // ISM Handler
     ISMHandler = std::make_shared<ISM::CISM>(&myCore);
-    ISMHandler->setupArbitraryRoom(trapezoidal);
-    ISMHandler->setAbsortion(absortionsWalls);
-    ISMHandler->setReflectionOrder(INITIAL_REFLECTION_ORDER);
+    ISMHandler->setupArbitraryRoom(trapezoidal);  // --> calls SourceImages::createImages(mainRoom, reflectionOrder)
+    ISMHandler->setAbsortion(absortionsWalls);    // --> calls SourceImages::createImages(mainRoom, reflectionOrder)
+    ISMHandler->setReflectionOrder(INITIAL_REFLECTION_ORDER);  // --> calls SourceImages::createImages(mainRoom, reflectionOrder)
     mainRoom = ISMHandler->getRoom(); 
-    ISMHandler->setMaxDistanceImageSources(INITIAL_DIST_SILENCED_FRAMES);
-    numberOfSilencedFrames = ISMHandler->calculateNumOfSilencedFrames(INITIAL_DIST_SILENCED_FRAMES); // I don't think this is necessary
+
+    // Not sure the following is necessary, from here ...->
+    ISMHandler->setMaxDistanceImageSources(INITIAL_DIST_SILENCED_FRAMES); // --> calls SourceImages::createImages(mainRoom, reflectionOrder)
+    numberOfSilencedFrames = ISMHandler->calculateNumOfSilencedFrames(INITIAL_DIST_SILENCED_FRAMES);
+    // <-... to here
 
     // Create an impulse source
     Common::CVector3 sourcePosition = {1.0, 0.0, 0.0};
@@ -137,7 +136,7 @@ void setup()
     // Disable all walls but one
     for (int i = 1; i < mainRoom.getWalls().size(); i++)
     {
-        ISMHandler->disableWall(i);
+        ISMHandler->disableWall(i); 	// --> calls SourceImages::createImages(mainRoom, reflectionOrder)
     }
 
     // Create Image Sources

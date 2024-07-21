@@ -3,3 +3,11 @@ build/
 
 #Ignore .DS_Store
 .DS_Store
+
+#Ignore nomagic backups
+*.mdzip.bak
+
+#Ignore processing outputs
+scripts/*/.vscode
+scripts/*/out/*
+scripts/*/*.autosave

@@ -35,11 +35,11 @@ end
 figure;
 
 % Plot everything in the same figure
-semilogx(frequencies, output_fft_magnitude_left, 'LineWidth', 2.5, 'Color', 'k');
+semilogx(frequencies, output_fft_magnitude_left, 'LineWidth', 2.5, 'Color', 'b');
 hold on;
 semilogx(frequencies, output_fft_magnitude_right, 'LineWidth', 2.5, 'Color', 'r');
 
-legend( 'Right channel', 'Left channel');
+legend( 'Left channel', 'Right channel', 'Location', 'southwest');
 title('FFT of Output Vectors');
 xlabel('Frequency (Hz - Log Scale)');
 ylabel(mylabel);
