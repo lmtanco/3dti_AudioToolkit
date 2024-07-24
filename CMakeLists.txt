@@ -89,7 +89,7 @@ target_link_libraries(threedit-brir
 find_package(matioCpp REQUIRED)
 
 # Declare a list of executables (this is for the filters)
-set(TESTS 01 02 03 04 05 )  
+set(TESTS 01 02 03 04 05 06 07)  
 
 foreach(TEST ${TESTS})
     add_executable(test${TEST} test/01_filters/testFilter-${TEST}.cpp)  # Añade el ejecutable

@@ -13,6 +13,7 @@ namespace fs = std::filesystem;
 #define ROOMFILE "ISM/XML/trapezoidal_1_A1.xml"
 #define INITIAL_REFLECTION_ORDER 3
 #define INITIAL_DIST_SILENCED_FRAMES  1000
+#define INITIAL_WIN_SLOPE 2.0f // mseg
 
 /// 3dti Toolkit 
 Binaural::CCore							myCore;				 // Core interface
@@ -31,6 +32,7 @@ std::vector<std::vector<float>> absortionsWalls;                                
 void LoadRoomGeometryFromXML(fs::path roomPath, ISM::RoomGeometry &roomGeometry, std::vector<std::vector<float>> &absortionsWalls);
 std::vector<shared_ptr<Binaural::CSingleSourceDSP>> createImageSourceDSP(); 
 void audioProcess(const CMonoBuffer<float>& input,  Common::CEarPair<CMonoBuffer<float>>& bufferOutput, int bufferSize);
+float millisec2meters(float millisec);
 
 /// setup
 void setup();
@@ -117,8 +119,8 @@ void setup()
     mainRoom = ISMHandler->getRoom(); 
 
     // Not sure the following is necessary, from here ...->
-    ISMHandler->setMaxDistanceImageSources(INITIAL_DIST_SILENCED_FRAMES); // --> calls SourceImages::createImages(mainRoom, reflectionOrder)
-    numberOfSilencedFrames = ISMHandler->calculateNumOfSilencedFrames(INITIAL_DIST_SILENCED_FRAMES);
+    ISMHandler->setMaxDistanceImageSources(INITIAL_DIST_SILENCED_FRAMES, millisec2meters(INITIAL_WIN_SLOPE)); // --> calls SourceImages::createImages(mainRoom, reflectionOrder)
+    ISMHandler->enableStaticDistanceCriterion();
     // <-... to here
 
     // Create an impulse source
@@ -280,4 +282,10 @@ void audioProcess(const CMonoBuffer<float>& input,  Common::CEarPair<CMonoBuffer
         }
     }
 
+}
+
+float millisec2meters(float millisec)
+{
+    float soundSpeed = myCore.GetMagnitudes().GetSoundSpeed();
+    return (millisec * soundSpeed) / 1000;
 }

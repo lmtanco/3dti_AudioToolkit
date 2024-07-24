@@ -3,7 +3,7 @@ function plot_output_log_multiple_9(linear)
 % Load the output vectors
 % Inside whe should have 
 % outputLowShelfVector, oputptHighShelfVector, outputBand1Vector, outputBand2Vector, outputBand3Vector, outputBand4Vector, outputBand5Vector, outputBand6Vector, outputBand7Vector
-outputs = open('../build/Debug/test6-grapheq-filters.mat')
+outputs = open('../build/Debug/test7-grapheq-filters.mat')
 
 % Sampling frequency
 fs = 48000; % in Hz
