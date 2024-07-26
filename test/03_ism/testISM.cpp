@@ -9,7 +9,7 @@ namespace fs = std::filesystem;
 
 #define SAMPLERATE 48000
 #define BUFFERSIZE 32768
-#define SOFAFILE "HRTF/SOFA/HRTF_SADIE_II_D1_44100_24bit_256tap_FIR_SOFA_aligned.sofa"
+#define SOFAFILE "HRTF/SOFA/UMA_NULL_S_HRIR_512.sofa"
 #define ROOMFILE "ISM/XML/trapezoidal_1_A1.xml"
 #define INITIAL_REFLECTION_ORDER 3
 #define INITIAL_DIST_SILENCED_FRAMES  1000
