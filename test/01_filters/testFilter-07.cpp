@@ -41,8 +41,8 @@ int main(int argc, char* argv[])
     // Testing the filter with the ReduceRipple flag set to true
     //constexpr bool ReduceRipple = false;
     //Common::CascadeGraphicEq9OctaveBands<ReduceRipple> filter(gains);
-    Common::CascadeGraphicEq9OctaveBands filter;
-    filter.SetCommandGains(gains);
+    Common::CascadeGraphicEq9OctaveBands filter(SAMPLINGFREQ);
+    filter.SetCommandGains(SAMPLINGFREQ, gains);
     
     // Filter the input with the filter;
     filter.Process(inputBuffer);
