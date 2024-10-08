@@ -229,10 +229,13 @@ endif()
 
 if (BUILD_HL_TESTS)
     # Declare tests for Hearing Loss simulation
-    add_executable(testHL test/04_HL/testHL.cpp)
-    target_link_libraries(testHL 
-        PRIVATE threedti-hahl
-        PRIVATE threedti-common
-        PRIVATE matioCpp::matioCpp
-    )  # Enlaza las bibliotecas
+    set(TESTSHL 01 02 03 04 05 06 07)  
+    foreach(TEST ${TESTSHL})
+        add_executable(testHL-${TEST} test/04_HL/testHL-${TEST}.cpp)  # Añade el ejecutable
+        target_link_libraries(testHL-${TEST} 
+            PRIVATE threedti-hahl
+            PRIVATE threedti-common
+            PRIVATE matioCpp::matioCpp)  # Enlaza las bibliotecas
+        
+    endforeach()
 endif()
