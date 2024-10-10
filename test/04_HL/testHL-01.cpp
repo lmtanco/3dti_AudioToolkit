@@ -65,8 +65,8 @@ int main(int argc, char const *argv[])
     expander.Process(inputBuffer, outputBuffer);
 
     // Copy the input and output to matio vectors
-    matioCpp::Vector<float> inputVector;
-    matioCpp::Vector<float> outputVector;
+    matioCpp::Vector<float> inputVector("inputVector");
+    matioCpp::Vector<float> outputVector("outputVector");
     inputVector = inputBuffer;
     outputVector = outputBuffer;
     
