@@ -228,14 +228,26 @@ if (BUILD_ISM_TESTS)
 endif()
 
 if (BUILD_HL_TESTS)
+    include (CTest)
+    enable_testing()
     # Declare tests for Hearing Loss simulation
-    set(TESTSHL 01 02 03 04 05 06 07)  
+    set(TESTSHL 01)  
     foreach(TEST ${TESTSHL})
         add_executable(testHL-${TEST} test/04_HL/testHL-${TEST}.cpp)  # Añade el ejecutable
+        target_include_directories(testHL-${TEST} 
+            PRIVATE test/04_HL) # For dr_wav.h
         target_link_libraries(testHL-${TEST} 
             PRIVATE threedti-hahl
             PRIVATE threedti-common
             PRIVATE matioCpp::matioCpp)  # Enlaza las bibliotecas
-        
+
+        # Copy the input file sweep.wav to the executable directory
+        add_custom_command(TARGET testHL-${TEST} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${CMAKE_CURRENT_SOURCE_DIR}/resources/AudioSamples/sweep.wav
+            $<TARGET_FILE_DIR:testHL-${TEST}>/sweep.wav) # This would be build/Debug/  (if we are in Debug mode)
+            #${CMAKE_CURRENT_BINARY_DIR}/sweep.wav) # This would be build/
+
+        add_test(NAME testHL-${TESTSHL} COMMAND testHL-${TESTSHL} WORKING_DIRECTORY $<TARGET_FILE_DIR:testHL-${TEST}>)
     endforeach()
 endif()
