@@ -151,6 +151,9 @@ if (BUILD_ISM_TESTS)
     )  # Enlaza las bibliotecas
 endif()
 
+# Encontrar matlab
+find_package(Matlab REQUIRED COMPONENTS MAIN_PROGRAM)
+
 if (BUILD_HL_TESTS)
     include (CTest)
     enable_testing()
@@ -172,6 +175,11 @@ if (BUILD_HL_TESTS)
             $<TARGET_FILE_DIR:testHL-${TEST}>/sweep_4seg.wav) # This would be build/Debug/  (if we are in Debug mode)
             #${CMAKE_CURRENT_BINARY_DIR}/sweep.wav) # This would be build/
 
+        # Add the test to CTest
         add_test(NAME testHL-${TESTSHL} COMMAND testHL-${TESTSHL} WORKING_DIRECTORY $<TARGET_FILE_DIR:testHL-${TEST}>)
+
+        #Add a custom test to run the MATLAB script after the test
+        add_test(NAME plot_output_testHL_${TEST} COMMAND ${Matlab_MAIN_PROGRAM} -batch "plot_output_testHL_${TEST}" WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts)
+        set_tests_properties(plot_output_testHL_${TEST} PROPERTIES DEPENDS testHL-${TEST}) # This test depends on the previous one
     endforeach()
 endif()

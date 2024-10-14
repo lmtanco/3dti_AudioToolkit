@@ -91,8 +91,7 @@ ylabel('Amplitud');
 % xlabel('Muestras');
 % ylabel('Amplitud');
 
-
-
+% Esperar a que el usuario cierre las ventanas de las gráficas
+waitfor(gcf);
 
 end
-
