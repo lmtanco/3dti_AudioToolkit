@@ -165,11 +165,11 @@ if (BUILD_HL_TESTS)
             PRIVATE threedti-common
             PRIVATE matioCpp::matioCpp)  # Enlaza las bibliotecas
 
-        # Copy the input file sweep.wav to the executable directory
+        # Copy the input file sweep_4seg.wav to the executable directory
         add_custom_command(TARGET testHL-${TEST} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_CURRENT_SOURCE_DIR}/resources/AudioSamples/sweep.wav
-            $<TARGET_FILE_DIR:testHL-${TEST}>/sweep.wav) # This would be build/Debug/  (if we are in Debug mode)
+            ${CMAKE_CURRENT_SOURCE_DIR}/resources/AudioSamples/sweep_4seg.wav
+            $<TARGET_FILE_DIR:testHL-${TEST}>/sweep_4seg.wav) # This would be build/Debug/  (if we are in Debug mode)
             #${CMAKE_CURRENT_BINARY_DIR}/sweep.wav) # This would be build/
 
         add_test(NAME testHL-${TESTSHL} COMMAND testHL-${TESTSHL} WORKING_DIRECTORY $<TARGET_FILE_DIR:testHL-${TEST}>)

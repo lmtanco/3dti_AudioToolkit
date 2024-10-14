@@ -41,7 +41,7 @@ int main(int argc, char const *argv[])
     CMonoBuffer<float> inputBuffer;
 
     // Load wav file
-    LoadWav(inputBuffer, "sweep.wav");
+    LoadWav(inputBuffer, "sweep_4seg.wav");
 
     // Delcare output buffer of same size as input
     CMonoBuffer<float> outputBuffer(inputBuffer.size());
