@@ -1,0 +1,89 @@
+function plot_output_testHL_02()
+
+inputData = open('../build/Debug/testHL-02-input.mat');
+outputData = open('../build/Debug/testHL-02-output.mat');
+
+% Asumimos que los datos están almacenados en variables llamadas 'inputVector' y 'outputVector'
+inputSignal = inputData.inputVector;
+outputSignal = outputData.outputVector;
+
+% Representar las señales en el dominio del tiempo
+figure;
+
+subplot(2, 1, 1);
+plot(inputSignal);
+title('Señal de Entrada en el Dominio del Tiempo');
+xlabel('Muestras');
+ylabel('Amplitud');
+% Fix vertical limit to [2,-2]
+ylim([-2, 2]);
+
+subplot(2, 1, 2);
+plot(outputSignal);
+title('Señal de Salida en el Dominio del Tiempo');
+xlabel('Muestras');
+ylabel('Amplitud');
+% Fix vertical limit to [2,-2]
+ylim([-2, 2]);
+
+% Calcular la FFT de ambas señales
+inputFFT = fft(inputSignal);
+
+% Calcular la inversa de la respuesta en frecuencia de la señal de entrada
+invInputFFT = 1./inputFFT;
+
+size(invInputFFT)
+
+% Calcular la fft de la salida
+outputFFT = fft(outputSignal);
+
+% Aplicar la inversa de la respuesta en frecuencia de la  entrada a la señal de salida
+responseFFT = oputputFFT.*invInputFFT;
+
+% Calcular el espectro de frecuencias
+n_input = length(inputSignal);
+f_input = (0:n_input-1)*(48000/n_input); % Asumiendo una frecuencia de muestreo de 48000 Hz
+n_output = length(outputSignal);
+f_output = (0:n_output-1)*(48000/n_output); % Asumiendo una frecuencia de muestreo de 48000 Hz
+
+%Visualizar sólo las mitades delos espectros
+half_n_input = floor(n_input/2);
+half_n_output = floor(n_output/2);
+
+% Plot Hsweep
+figure;
+plot(f_input(1:half_n_input), abs(invInputFFT(1:half_n_input)));
+title('Inversa de la Respuesta en Frecuencia Grabada');
+xlabel('Frecuencia (Hz)');
+ylabel('Amplitud');
+xlim([0, 24000]); % Limitar el eje x a la mitad de la frecuencia de muestreo
+
+% Representar las señales en el dominio de la frecuencia
+figure;
+
+subplot(3, 1, 1);
+plot(f_input(1:half_n_input), abs(inputFFT(1:half_n_input)));
+title('Señal de Entrada en el Dominio de la Frecuencia');
+xlabel('Frecuencia (Hz)');
+ylabel('Amplitud');
+xlim([0, 24000]); % Limitar el eje x a la mitad de la frecuencia de muestreo
+
+subplot(3, 1, 2);
+plot(f_output(1:half_n_output), abs(outputFFT(1:half_n_output)));
+title('Señal de Salida en el Dominio de la Frecuencia');
+xlabel('Frecuencia (Hz)');
+ylabel('Amplitud');
+xlim([0, 24000]); % Limitar el eje x a la mitad de la frecuencia de muestreo
+
+
+subplot(3, 1, 3);
+plot(f_output(1:half_n_output), abs(responseFFT(1:half_n_output)));
+title('Respuesta en Frecuencia del Sistema');
+xlabel('Frecuencia (Hz)');
+ylabel('Amplitud');
+xlim([0, 24000]); % Limitar el eje x a la mitad de la frecuencia de muestreo
+
+
+waitfor(gcf);
+
+end
