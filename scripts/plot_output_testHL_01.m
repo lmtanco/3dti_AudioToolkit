@@ -20,12 +20,16 @@ plot(inputSignal);
 title('Señal de Entrada en el Dominio del Tiempo');
 xlabel('Muestras');
 ylabel('Amplitud');
+% Fix vertical limit to [2,-2]
+ylim([-2, 2]);
 
 subplot(2, 1, 2);
 plot(outputSignal);
 title('Señal de Salida en el Dominio del Tiempo');
 xlabel('Muestras');
 ylabel('Amplitud');
+% Fix vertical limit to [2,-2]
+ylim([-2, 2]);
 
 % Calcular la FFT de ambas señales
 inputFFT = fft(inputSignal);

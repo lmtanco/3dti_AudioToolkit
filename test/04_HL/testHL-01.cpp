@@ -9,7 +9,6 @@
  * 
  */
 
-#define BUFFERSIZE 32768
 #define SAMPLINGFREQ 48000
 #define HL_INITIAL_FREQ_HZ 250
 #define HL_BANDS_NUMBER 8
