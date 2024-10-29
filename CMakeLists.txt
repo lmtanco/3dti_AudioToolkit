@@ -154,12 +154,14 @@ endif()
 # Encontrar matlab
 find_package(Matlab REQUIRED COMPONENTS MAIN_PROGRAM)
 
+# Build the tests for the Hearing Loss simulation which are in the test/04_HL directory
 if (BUILD_HL_TESTS)
     include (CTest)
     enable_testing()
     # Declare tests for Hearing Loss simulation
     set(TESTSHL 01)  
     foreach(TEST ${TESTSHL})
+
         add_executable(testHL-${TEST} test/04_HL/testHL-${TEST}.cpp)  # Añade el ejecutable
         target_include_directories(testHL-${TEST} 
             PRIVATE test/04_HL) # For dr_wav.h
@@ -168,15 +170,21 @@ if (BUILD_HL_TESTS)
             PRIVATE threedti-common
             PRIVATE matioCpp::matioCpp)  # Enlaza las bibliotecas
 
-        # Copy the input file sweep_4seg.wav to the executable directory
+        # Copy the input file to the executable directory
+        if (${TEST} STREQUAL "01")
+            SET(INPUT_FILE "sweep_4seg.wav")
+        elseif (${TEST} STREQUAL "02")
+            SET(INPUT_FILE "pink_48000_4_sec.wav")
+        endif()
+
         add_custom_command(TARGET testHL-${TEST} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${CMAKE_CURRENT_SOURCE_DIR}/resources/AudioSamples/sweep_4seg.wav
-            $<TARGET_FILE_DIR:testHL-${TEST}>/sweep_4seg.wav) # This would be build/Debug/  (if we are in Debug mode)
-            #${CMAKE_CURRENT_BINARY_DIR}/sweep.wav) # This would be build/
+            ${CMAKE_CURRENT_SOURCE_DIR}/resources/AudioSamples/${INPUT_FILE}
+            $<TARGET_FILE_DIR:testHL-${TEST}>/${INPUT_FILE}) # This would be build/Debug/  (if we are in Debug mode)
+            #${CMAKE_CURRENT_BINARY_DIR}/${INPUT_FILE}) # This would be build/
 
         # Add the test to CTest
-        add_test(NAME testHL-${TESTSHL} COMMAND testHL-${TESTSHL} WORKING_DIRECTORY $<TARGET_FILE_DIR:testHL-${TEST}>)
+        add_test(NAME testHL-${TEST} COMMAND testHL-${TEST} WORKING_DIRECTORY $<TARGET_FILE_DIR:testHL-${TEST}>)
 
         #Add a custom test to run the MATLAB script after the test
         add_test(NAME plot_output_testHL_${TEST} COMMAND ${Matlab_MAIN_PROGRAM} -batch "plot_output_testHL_${TEST}" WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts)
