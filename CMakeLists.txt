@@ -151,7 +151,8 @@ if (BUILD_ISM_TESTS)
     )  # Enlaza las bibliotecas
 endif()
 
-# Encontrar matlab
+# Find matlab
+# Might require to set Matlab_ROOT_DIR to the path where Matlab is installed in CMakeCache.txt
 find_package(Matlab REQUIRED COMPONENTS MAIN_PROGRAM)
 
 # Build the tests for the Hearing Loss simulation which are in the test/04_HL directory
@@ -159,7 +160,7 @@ if (BUILD_HL_TESTS)
     include (CTest)
     enable_testing()
     # Declare tests for Hearing Loss simulation
-    set(TESTSHL 01)  
+    set(TESTSHL 03)  
     foreach(TEST ${TESTSHL})
 
         add_executable(testHL-${TEST} test/04_HL/testHL-${TEST}.cpp)  # Añade el ejecutable
@@ -173,7 +174,7 @@ if (BUILD_HL_TESTS)
         # Copy the input file to the executable directory
         if (${TEST} STREQUAL "01")
             SET(INPUT_FILE "sweep_4seg.wav")
-        elseif (${TEST} STREQUAL "02")
+        elseif (${TEST} STREQUAL "02" OR ${TEST} STREQUAL "03")
             SET(INPUT_FILE "pink_48000_4_sec.wav")
         endif()
 
