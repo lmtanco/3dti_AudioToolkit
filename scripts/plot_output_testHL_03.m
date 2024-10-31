@@ -27,20 +27,22 @@ figure;
 % Change name of whole figure
 set(gcf, 'Name', 'INPUT / OUTPUT POWER SPECTRUM');
 subplot(3, 1, 1);
-plot(f_input, 10*log10(pxx_input), 'b'); % 'b' specifies the color blue
+f_input_khz = f_input / 1000;
+plot(f_input_khz, 10*log10(pxx_input), 'b'); % 'b' specifies the color blue
 title_str = sprintf('Welch power spectral density estimation (Input) with %d ms segments, fft with %d length', segment_length/fs*1000, nfft);
 title(title_str);
-xlabel('Frequency (Hz)');
+xlabel('Frequency (kHz)');
 ylabel('Power/Frequency (dB/Hz)');
 grid on;
 ylim([-90, -50]);
 
 % Plot the PSD of the output signal
 subplot(3, 1, 2);
-plot(f_output, 10*log10(pxx_output), 'r'); % 'r' specifies the color red
+f_output_khz = f_output / 1000;
+plot(f_output_khz, 10*log10(pxx_output), 'r'); % 'r' specifies the color red
 title_str = sprintf('Welch power spectral density estimation (Output) with %d ms segments, fft with %d length', segment_length/fs*1000, nfft);
 title(title_str);
-xlabel('Frequency (Hz)');
+xlabel('Frequency (kHz)');
 ylabel('Power/Frequency (dB/Hz)');
 grid on;
 ylim([-90, -50]);
@@ -50,9 +52,9 @@ transfer_function = pxx_output ./ pxx_input;
 
 % Plot the transfer function
 subplot(3, 1, 3);
-plot(f_input, 10*log10(transfer_function), 'k'); % 'k' specifies the color black
+plot(f_input_khz, 10*log10(transfer_function), 'k'); % 'k' specifies the color black
 title('Transfer Function (Output/Input)');
-xlabel('Frequency (Hz)');
+xlabel('Frequency (kHz)');
 ylabel('Magnitude (dB)');
 grid on;
 
