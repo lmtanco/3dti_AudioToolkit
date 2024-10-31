@@ -103,6 +103,11 @@ namespace HAHLSimulation {
 
 		float GetNumFilters();
 
+		#ifndef NDEBUG
+		// For testing purposes
+		Common::CGammatoneFilterBank & GetGammatoneFilterBank() { return gammatoneFilterBank; }
+		#endif 
+
 	private:
 
 		// Calculates the gain applied to a specific filter
