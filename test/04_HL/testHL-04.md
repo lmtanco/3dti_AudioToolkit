@@ -1,11 +1,20 @@
 # testHL-04.cpp
 
-[testHL-04.cpp](./testHL-04.cpp) creates a Multiband Expander with 8 bands at 250, 500, 1000, 2000, 4000, 8000, 16000 and 32000.
+[testHL-04.cpp](./testHL-04.cpp) creates a Multiband Expander with parameters: 
+* samplingRate = 48000
+* iniFreq_Hz = 250 
+* bandsNumber = 8
+* filterGrouping = true
+
+This is done with these two lines: 
+  
 
 ```cpp
 HAHLSimulation::CGammatoneMultibandExpander expander;
 expander.Setup(48000, 250, 8, true);
 ```
+
+This creates a Multiband Expander with 8 bands at 250, 500, 1000, 2000, 4000, 8000, 16000 and 32000.
 
 Internally, in the expander `Setup` method, the GammatoneFilter bank is initialised with harcoded parameters:
 
@@ -17,7 +26,7 @@ gammatoneFilterBank.InitWithFreqRangeOverlap(20, 20000, 0.0, Common::CGammatoneF
 }
 ```
 
-The `EAR_MODEL_DEFAULT` corresponds to an `EAR_MODEL_GLASBERG`., which provides values for parameters `q=9.26449 `and `minbw=24.7`. This parameters are in turn used to calculate the number of filters. in the bank:
+The `EAR_MODEL_DEFAULT` corresponds to an `EAR_MODEL_GLASBERG`., which provides values for parameters `q=9.26449 `and `minbw=24.7`. This parameters are in turn used to calculate the number of filters in the bank:
 
 $$
 \text{num\_filters} = \frac{q \cdot (\ln(highFreq + q \cdot minbw)-\ln(lowFreq + q \cdot minbw))} {\text{stepfactor}}
@@ -49,3 +58,23 @@ This gives the following center frequencies and bandwithds for the gammatone.
 |   39   |      71.605      |  32.429  |
 |   40   |      40.865      |  29.111  |
 |   41   |      13.270      |  26.132  |
+
+To access the individual gammatones we created a version of the toolkit that gives access to the internal bank: 
+
+```cpp
+    Common::CGammatoneFilterBank &filterBank = expander.GetGammatoneFilterBank();
+```
+
+Then we can process the input using each gammatone individually: 
+
+```cpp
+    auto numFilters = filterBank.GetNumFilters();
+    std::vector<CMonoBuffer<float>> filterOutputs;
+    for (auto i = 0; i < numFilters; i++)
+    {
+        CMonoBuffer<float> filterOutput(inputBuffer.size());
+        auto filter = filterBank.GetFilter(i);
+        filter->Process(inputBuffer, filterOutput);
+        filterOutputs.push_back(filterOutput);
+    }
+```

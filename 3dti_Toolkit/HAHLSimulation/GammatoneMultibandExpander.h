@@ -106,6 +106,10 @@ namespace HAHLSimulation {
 		#ifndef NDEBUG
 		// For testing purposes
 		Common::CGammatoneFilterBank & GetGammatoneFilterBank() { return gammatoneFilterBank; }
+
+		inline std::vector<std::vector<int>> GetBandIndices() const {
+			return bandIndices;
+		}
 		#endif 
 
 	private:

@@ -320,6 +320,10 @@ namespace HAHLSimulation {
 				else if (i == bandLimits_Hz.size()) bandCentralFreq = 30000;
 				else if (i > 0 && i < bandLimits_Hz.size()) bandCentralFreq = sqrtf(bandLimits_Hz[i] * bandLimits_Hz[i - 1]);
 
+				#ifndef NDEBUG
+				std::cout << "Band " << i << " central frequency: " << bandCentralFreq << std::endl;
+				#endif
+
 				groupBandCentralFrequencies_Hz.push_back(bandCentralFreq);
 
 				// Add lower and higher octave band indices for this frequency

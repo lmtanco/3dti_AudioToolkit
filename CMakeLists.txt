@@ -7,10 +7,10 @@ set(CMAKE_CXX_STANDARD 17) # Not sure if this is necessary
 
 # Find out what libraries we are going to build
 option(BUILD_COMMON "Build the common library" ON)
-option(BUILD_BINAURAL "Build the binaural library" ON)
-option(BUILD_ISM "Build the ISM library" ON)
-option(BUILD_HRTF "Build the HRTF library" ON)
-option(BUILD_BRIR "Build the BRIR library" ON)
+option(BUILD_BINAURAL "Build the binaural library" OFF)
+option(BUILD_ISM "Build the ISM library" OFF)
+option(BUILD_HRTF "Build the HRTF library" OFF)
+option(BUILD_BRIR "Build the BRIR library" OFF)
 option(BUILD_HAHL "Build the HAHL library" ON)
 
 #find all the source files in 3dti_Toolkit/Common subdirectory according to selected options
@@ -103,9 +103,9 @@ endif()
 find_package(matioCpp REQUIRED)
 
 # Declare a list of executables 
-option(BUILD_FILTER_TESTS "Build the filter tests" ON)
-option(BUILD_BINAURAL_TESTS "Build the binaural tests" ON)
-option(BUILD_ISM_TESTS "Build the ISM tests" ON)
+option(BUILD_FILTER_TESTS "Build the filter tests" OFF)
+option(BUILD_BINAURAL_TESTS "Build the binaural tests" OFF)
+option(BUILD_ISM_TESTS "Build the ISM tests" OFF)
 option(BUILD_HL_TESTS "Build the hearing loss tests" ON)
 
 
@@ -160,7 +160,8 @@ if (BUILD_HL_TESTS)
     include (CTest)
     enable_testing()
     # Declare tests for Hearing Loss simulation
-    set(TESTSHL 04)  
+    # set(TESTSHL 01 02 03 04 05)
+    set(TESTSHL 05)  
     foreach(TEST ${TESTSHL})
 
         add_executable(testHL-${TEST} test/04_HL/testHL-${TEST}.cpp)  # Añade el ejecutable
@@ -174,7 +175,7 @@ if (BUILD_HL_TESTS)
         # Copy the input file to the executable directory
         if (${TEST} STREQUAL "01")
             SET(INPUT_FILE "sweep_4seg.wav")
-        elseif (${TEST} STREQUAL "02" OR ${TEST} STREQUAL "03" OR ${TEST} STREQUAL "04")
+        elseif (${TEST} STREQUAL "02" OR ${TEST} STREQUAL "03" OR ${TEST} STREQUAL "04" OR ${TEST} STREQUAL "05")
             SET(INPUT_FILE "pink_48000_4_sec.wav")
         endif()
 
