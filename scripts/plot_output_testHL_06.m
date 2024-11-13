@@ -6,16 +6,22 @@ inputData = open('../build/Debug/testHL-06-input.mat');
 outputData = open('../build/Debug/testHL-06-output.mat');
 individualFilterOutputData = open('../build/Debug/testHL-06-filterOutputs.mat');
 bandIndicesData = open('../build/Debug/testHL-06-bandIndices.mat');
-hearingLossData = open('../build/Debug/testHL-06-hearingLoss.mat');
+stereoOutputsData = open('../build/Debug/testHL-06-stereoOutputs.mat');
 
 % Test assumes data is in 'inputVector' y 'outputVector'
 inputSignal = inputData.inputVector;
 outputSignal = outputData.outputVector;
 
 % Load hearing loss data
-hearingLossLeftSignal = hearingLossData.hearingLossLeft;
-hearingLossRightSignal = hearingLossData.hearingLossRight;
-
+inputSignal_x1 = stereoOutputsData.input_x1;
+inputSignal_x2 = stereoOutputsData.input_x2;
+inputSignal_x4 = stereoOutputsData.input_x4;
+hearingLossLeftSignal = stereoOutputsData.hearingLoss_x1_left;
+hearingLossRightSignal = stereoOutputsData.hearingLoss_x1_right;
+hearingLossLeftSignal_x2 = stereoOutputsData.hearingLoss_x2_left;
+hearingLossRightSignal_x2 = stereoOutputsData.hearingLoss_x2_right;
+hearingLossLeftSignal_x4 = stereoOutputsData.hearingLoss_x4_left;
+hearingLossRightSignal_x4 = stereoOutputsData.hearingLoss_x4_right;
 
 % Load individual filter outputs in a cell array
 % Each individual filter is called filterOutputVector_i , i = 00, 01, 02, ...41
@@ -38,8 +44,14 @@ fs = 48000; % Sampling frequency
 % Convert signals to double
 inputSignal = double(inputSignal);
 outputSignal = double(outputSignal);
+inputSignal_x1 = double(inputSignal_x1);
+inputSignal_x2 = double(inputSignal_x2);
 hearingLossLeftSignal = double(hearingLossLeftSignal);
 hearingLossRightSignal = double(hearingLossRightSignal);
+hearingLossLeftSignal_x2 = double(hearingLossLeftSignal_x2);
+hearingLossRightSignal_x2 = double(hearingLossRightSignal_x2);
+hearingLossLeftSignal_x4 = double(hearingLossLeftSignal_x4);
+hearingLossRightSignal_x4 = double(hearingLossRightSignal_x4);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIGURE 1: POWER SPECTRAL DENSITY USING PWELCH %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Calculate the PSD using pwelch
@@ -164,48 +176,67 @@ set(gcf, 'Name', 'HEARING LOSS SIMULATION (RIGHT EAR 50 dB LOSS in bands 4 and 5
 % Calculate power spectral density using pwelch
 [pxx_hearingLossLeft, f_hearingLossLeft] = pwelch(hearingLossLeftSignal, segment_length, noverlap, nfft, fs);
 [pxx_hearingLossRight, f_hearingLossRight] = pwelch(hearingLossRightSignal, segment_length, noverlap, nfft, fs);
+[pxx_hearingLossLeft_x2, f_hearingLossLeft_x2] = pwelch(hearingLossLeftSignal_x2, segment_length, noverlap, nfft, fs);
+[pxx_hearingLossRight_x2, f_hearingLossRight_x2] = pwelch(hearingLossRightSignal_x2, segment_length, noverlap, nfft, fs);
+[pxx_hearingLossLeft_x4, f_hearingLossLeft_x4] = pwelch(hearingLossLeftSignal_x4, segment_length, noverlap, nfft, fs);
+[pxx_hearingLossRight_x4, f_hearingLossRight_x4] = pwelch(hearingLossRightSignal_x4, segment_length, noverlap, nfft, fs);
+
+% Calculate power spectral density of the input signals
+[pxx_input_x1, f_input_x1] = pwelch(inputSignal_x1, segment_length, noverlap, nfft, fs);
+[pxx_input_x2, f_input_x2] = pwelch(inputSignal_x2, segment_length, noverlap, nfft, fs);
+[pxx_input_x4, f_input_x4] = pwelch(inputSignal_x4, segment_length, noverlap, nfft, fs);
 
 % Calculate transfer function of each ear
-transfer_function_hearingLossLeft = pxx_hearingLossLeft ./ pxx_input;
-transfer_function_hearingLossRight = pxx_hearingLossRight ./ pxx_input;
-
-% Plot again the input power spectral density
-subplot(1, 2, 1);
-semilogx(f_input_khz, 10*log10(pxx_input), 'b', 'LineWidth', 2); % 'b' specifies the color blue
-title('Input Power Spectral Density');
-xlabel('Frequency (kHz)');
-ylabel('Power/Frequency (dB/Hz)');
-set(gca, 'XTick', [0.125, 0.25, 0.5, 1, 2, 4, 8, 16]);
-xlim([0, fs/2]/1000);
-grid on;
-
+transfer_function_hearingLossLeft = pxx_hearingLossLeft ./ pxx_input_x1;
+transfer_function_hearingLossRight = pxx_hearingLossRight ./ pxx_input_x1;
+transfer_function_hearingLossLeft_x2 = pxx_hearingLossLeft_x2 ./ pxx_input_x2;
+transfer_function_hearingLossRight_x2 = pxx_hearingLossRight_x2 ./ pxx_input_x2; 
+transfer_function_hearingLossLeft_x4 = pxx_hearingLossLeft_x4 ./ pxx_input_x4;
+transfer_function_hearingLossRight_x4 = pxx_hearingLossRight_x4 ./ pxx_input_x4;
 
 % Plot the input signal in the time domain and the transfer function of the right ear
 subplot(2, 2, 1);
 time_axis = (0:length(inputSignal)-1)/fs;
-plot(time_axis, inputSignal, 'r', 'LineWidth', 1);
+hold on;
+
+plot(time_axis, inputSignal_x4, 'b', 'LineWidth', 1);
+plot(time_axis, inputSignal_x2, 'g', 'LineWidth', 1);
+plot(time_axis, inputSignal_x1, 'r', 'LineWidth', 1);
+
 title('Input signal in time domain');
 xlabel('Time (s)');
 ylabel('Amplitude');
 ylim([-1, 1]); % % Fix vertical limit to [1,-1]
 %yticks([0, 20, 40, 60, 80, 100]);
 grid on;
+legend('Input x4', 'Input x2', 'Input x1');
 
 % Add envelope of signal in DB in figure
 % Calculate the envelope of the input signal
 subplot(2,2,2);
-inputSignalEnvelope = envelope(inputSignal, 150,'rms');
-inputSignalEnvelope_DB = 20*log10(abs(inputSignalEnvelope)) + HL_DBS_SPL_FOR_0_DBS_FS;
-semilogy(time_axis, inputSignalEnvelope_DB, 'r', 'LineWidth', 1);
-title('Envelope of the input signal in time domain with HL-DBS-SPL-FOR-0-DBS-FS = 100');
+inputSignalEnvelope_x1 = envelope(inputSignal_x1, 150,'rms');
+inputSignalEnvelope_x1_DB = 20*log10(abs(inputSignalEnvelope_x1)) + HL_DBS_SPL_FOR_0_DBS_FS;
+inputSignalEnvelope_x2 = envelope(inputSignal_x2, 150,'rms');
+inputSignalEnvelope_x2_DB = 20*log10(abs(inputSignalEnvelope_x2)) + HL_DBS_SPL_FOR_0_DBS_FS;
+inputSignalEnvelope_x4 = envelope(inputSignal_x4, 150,'rms');
+inputSignalEnvelope_x4_DB = 20*log10(abs(inputSignalEnvelope_x4)) + HL_DBS_SPL_FOR_0_DBS_FS;
+plot(time_axis, inputSignalEnvelope_x1_DB, 'r', 'LineWidth', 1);
+hold on;
+plot(time_axis, inputSignalEnvelope_x2_DB, 'g', 'LineWidth', 1);
+plot(time_axis, inputSignalEnvelope_x4_DB, 'b', 'LineWidth', 1);
+title('Envelope of the input signals in time domain with HL-DBS-SPL-FOR-0-DBS-FS = 100');
 xlabel('Time (s)');
 ylabel('Amplitude (dB)');
 ylim([0, 100]); % % Fix vertical limit to [0, 100]
 %yticks([0, 20, 40, 60, 80, 100]);
 grid on;
+legend('Input x1', 'Input x2', 'Input x4');
 
 subplot(2,2,3);
 semilogx(f_input_khz, 10*log10(transfer_function_hearingLossLeft), 'r', 'LineWidth', 2); % 'r' specifies the color red
+hold on;
+semilogx(f_input_khz, 10*log10(transfer_function_hearingLossLeft_x2), 'g', 'LineWidth', 2); % 'g' specifies the color green
+semilogx(f_input_khz, 10*log10(transfer_function_hearingLossLeft_x4), 'b', 'LineWidth', 2); % 'b' specifies the color blue
 title('Hearing Loss Left Ear (no loss)');
 xlabel('Frequency (kHz)');
 ylabel('Magnitude (dB)');
@@ -235,6 +266,9 @@ end
 
 subplot(2, 2, 4);
 semilogx(f_input_khz, 10*log10(transfer_function_hearingLossRight), 'r', 'LineWidth', 2); % 'r' specifies the color red
+hold on;
+semilogx(f_input_khz, 10*log10(transfer_function_hearingLossRight_x2), 'g', 'LineWidth', 2); % 'g' specifies the color green
+semilogx(f_input_khz, 10*log10(transfer_function_hearingLossRight_x4), 'b', 'LineWidth', 2); % 'b' specifies the color blue
 title('Hearing Loss Right Ear(50 dB loss in bands 4 and 5)');
 xlabel('Frequency (kHz)');
 ylabel('Magnitude (dB)');
