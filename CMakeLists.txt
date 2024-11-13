@@ -160,8 +160,8 @@ if (BUILD_HL_TESTS)
     include (CTest)
     enable_testing()
     # Declare tests for Hearing Loss simulation
-    # set(TESTSHL 01 02 03 04 05)
-    set(TESTSHL 05)  
+    # set(TESTSHL 01 02 03 04 05 06)
+    set(TESTSHL 06)  
     foreach(TEST ${TESTSHL})
 
         add_executable(testHL-${TEST} test/04_HL/testHL-${TEST}.cpp)  # Añade el ejecutable
@@ -175,7 +175,7 @@ if (BUILD_HL_TESTS)
         # Copy the input file to the executable directory
         if (${TEST} STREQUAL "01")
             SET(INPUT_FILE "sweep_4seg.wav")
-        elseif (${TEST} STREQUAL "02" OR ${TEST} STREQUAL "03" OR ${TEST} STREQUAL "04" OR ${TEST} STREQUAL "05")
+        else()
             SET(INPUT_FILE "pink_48000_4_sec.wav")
         endif()
 

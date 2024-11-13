@@ -49,6 +49,29 @@
             "logging": {
                 "engineLogging": true
             }
+        },
+        {
+            "name": "Depurar testHL-06",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/Debug/testHL-06", // Ruta al ejecutable
+            "args": [],
+            "stopAtEntry": true,
+            "cwd": "${workspaceFolder}/build/Debug",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "setupCommands": [
+                {
+                    "description": "Habilitar impresión de valores para LLDB",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build",
+            "logging": {
+                "engineLogging": true
+            }
         }
     ]
 }

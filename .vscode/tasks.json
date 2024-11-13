@@ -22,6 +22,17 @@
             },
             "problemMatcher": ["$gcc"],
             "detail": "Tarea generada por el depurador."
+        },
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "cmake --build build --target testHL-06",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": ["$gcc"],
+            "detail": "Tarea generada por el depurador."
         }
     ]
 }
