@@ -1,5 +1,7 @@
 function plot_output_testHL_06()
 
+HL_DBS_SPL_FOR_0_DBS_FS=100;
+
 inputData = open('../build/Debug/testHL-06-input.mat');
 outputData = open('../build/Debug/testHL-06-output.mat');
 individualFilterOutputData = open('../build/Debug/testHL-06-filterOutputs.mat');
@@ -102,7 +104,6 @@ title(title_str);
 xlabel('Frequency (kHz)');
 ylabel('Magnitude (dB)');
 % Change the x-axis to show the frequency band centers 250, 500, 1000, 2000, 4000, 8000 and 16000 Hz
-% Change the x-axis to show the frequency band centers 125, 250, 500, 1000, 2000, 4000, 8000 and 16000 Hz and also their separation at those values times sqrt(2), in KHz
 set(gca, 'XTick', [0.125, 0.25, 0.5, 1, 2, 4, 8, 16]);
 % Change the xlimits to show up to fs/2
 xlim([0, fs/2]/1000);
@@ -168,22 +169,98 @@ set(gcf, 'Name', 'HEARING LOSS SIMULATION (RIGHT EAR 50 dB LOSS in bands 4 and 5
 transfer_function_hearingLossLeft = pxx_hearingLossLeft ./ pxx_input;
 transfer_function_hearingLossRight = pxx_hearingLossRight ./ pxx_input;
 
-% Plot the transfer function of the left and right ear
+% Plot again the input power spectral density
 subplot(1, 2, 1);
-semilogx(f_input_khz, 10*log10(transfer_function_hearingLossLeft), 'b', 'LineWidth', 2); % 'b' specifies the color blue
-title('Hearing Loss Left Ear(no loss)');
+semilogx(f_input_khz, 10*log10(pxx_input), 'b', 'LineWidth', 2); % 'b' specifies the color blue
+title('Input Power Spectral Density');
+xlabel('Frequency (kHz)');
+ylabel('Power/Frequency (dB/Hz)');
+set(gca, 'XTick', [0.125, 0.25, 0.5, 1, 2, 4, 8, 16]);
+xlim([0, fs/2]/1000);
+grid on;
+
+
+% Plot the input signal in the time domain and the transfer function of the right ear
+subplot(2, 2, 1);
+time_axis = (0:length(inputSignal)-1)/fs;
+plot(time_axis, inputSignal, 'r', 'LineWidth', 1);
+title('Input signal in time domain');
+xlabel('Time (s)');
+ylabel('Amplitude');
+ylim([-1, 1]); % % Fix vertical limit to [1,-1]
+%yticks([0, 20, 40, 60, 80, 100]);
+grid on;
+
+% Add envelope of signal in DB in figure
+% Calculate the envelope of the input signal
+subplot(2,2,2);
+inputSignalEnvelope = envelope(inputSignal, 150,'rms');
+inputSignalEnvelope_DB = 20*log10(abs(inputSignalEnvelope)) + HL_DBS_SPL_FOR_0_DBS_FS;
+semilogy(time_axis, inputSignalEnvelope_DB, 'r', 'LineWidth', 1);
+title('Envelope of the input signal in time domain with HL-DBS-SPL-FOR-0-DBS-FS = 100');
+xlabel('Time (s)');
+ylabel('Amplitude (dB)');
+ylim([0, 100]); % % Fix vertical limit to [0, 100]
+%yticks([0, 20, 40, 60, 80, 100]);
+grid on;
+
+subplot(2,2,3);
+semilogx(f_input_khz, 10*log10(transfer_function_hearingLossLeft), 'r', 'LineWidth', 2); % 'r' specifies the color red
+title('Hearing Loss Left Ear (no loss)');
 xlabel('Frequency (kHz)');
 ylabel('Magnitude (dB)');
 set(gca, 'XTick', [0.125, 0.25, 0.5, 1, 2, 4, 8, 16]);
 xlim([0, fs/2]/1000);
+grid on;
 
-subplot(1, 2, 2);
+% Represent again the octave bands at 125, 250, 500, 1000, 2000, 4000, 8000 and 16000 Hz using the patch function
+% The patch function is used to represent the octave bands in the plot
+% figure;
+% hold on;
+xlimits = get(gca, 'XLim');
+ylimits = get(gca, 'YLim');
+
+% add text to the patches that reads "band %d: %d kHz, band, center frequency"
+for i = 1:length(octave_bands)
+    text(octave_bands(i)/1000, ylimits(1) + 5, sprintf('Band %d:', i));
+    text(octave_bands(i)/1000, ylimits(1) + 2, sprintf(' %d Hz', octave_bands(i)));
+end
+
+% Plot the octave bands
+for i = 1:length(octave_bands)
+    x = [octave_bands_limits(1, i), octave_bands_limits(2, i), octave_bands_limits(2, i), octave_bands_limits(1, i)];
+    y = [ylimits(1), ylimits(1), ylimits(2), ylimits(2)];
+    patch('XData', x, 'YData', y, 'FaceColor', octave_colors(i, :), 'FaceAlpha', 0.2, 'EdgeColor', octave_colors(i, :));
+end
+
+subplot(2, 2, 4);
 semilogx(f_input_khz, 10*log10(transfer_function_hearingLossRight), 'r', 'LineWidth', 2); % 'r' specifies the color red
 title('Hearing Loss Right Ear(50 dB loss in bands 4 and 5)');
 xlabel('Frequency (kHz)');
 ylabel('Magnitude (dB)');
 set(gca, 'XTick', [0.125, 0.25, 0.5, 1, 2, 4, 8, 16]);
 xlim([0, fs/2]/1000);
+grid on;
+
+% Represent again the octave bands at 125, 250, 500, 1000, 2000, 4000, 8000 and 16000 Hz using the patch function
+% The patch function is used to represent the octave bands in the plot
+% figure;
+% hold on;
+xlimits = get(gca, 'XLim');
+ylimits = get(gca, 'YLim');
+
+% add text to the patches that reads "band %d: %d kHz, band, center frequency"
+for i = 1:length(octave_bands)
+    text(octave_bands(i)/1000, ylimits(1) + 5, sprintf('Band %d:', i));
+    text(octave_bands(i)/1000, ylimits(1) + 2, sprintf(' %d Hz', octave_bands(i)));
+end
+
+% Plot the octave bands
+for i = 1:length(octave_bands)
+    x = [octave_bands_limits(1, i), octave_bands_limits(2, i), octave_bands_limits(2, i), octave_bands_limits(1, i)];
+    y = [ylimits(1), ylimits(1), ylimits(2), ylimits(2)];
+    patch('XData', x, 'YData', y, 'FaceColor', octave_colors(i, :), 'FaceAlpha', 0.2, 'EdgeColor', octave_colors(i, :));
+end
 
 
 waitfor(gcf);
