@@ -11,10 +11,10 @@
 #define SAMPLINGFREQ 48000
 
 
-#define HL_INITIAL_FREQ_HZ 250
+#define HL_INITIAL_FREQ_HZ 125
 #define HL_BANDS_NUMBER 8
 // These two numbers above give the following bands:
-// 250, 500, 1000, 2000, 4000, 8000, 16000, 32000
+// 125, 250, 500, 1000, 2000, 4000, 8000, 16000,
 
 
 #define HL_ATTACK_TIME_MS 200
@@ -41,7 +41,7 @@ int main(int argc, char const *argv[])
     // Show the current path
     std::cout << "Current path is " << currentPath << std::endl;
 
-    HAHLSimulation::CGammatoneMultibandExpander expander;
+    std::shared_ptr<HAHLSimulation::CGammatoneMultibandExpander> expander = std::make_shared<HAHLSimulation::CGammatoneMultibandExpander>();
 
     // Declare an input buffer
     CMonoBuffer<float> inputBuffer;
@@ -54,25 +54,27 @@ int main(int argc, char const *argv[])
 
     // Setup the gammatone multiband expander
     bool filterGrouping = true; // We will be grouping the filters according to the audiometry band limits
-    expander.Setup(SAMPLINGFREQ, HL_INITIAL_FREQ_HZ, HL_BANDS_NUMBER, filterGrouping);
+    expander->Setup(SAMPLINGFREQ, HL_INITIAL_FREQ_HZ, HL_BANDS_NUMBER, filterGrouping);
     // Audiometry band limits.
     // Note that the band limits are strange, not octaves. 
-    vector<float> bandLimits = {353.5533906f, 707.1067812f, 1414.213562f, 2449.489743f, 3464.101615f, 4898.979486f, 6928.20323f};
-    expander.SetGroups(bandLimits);
+    //vector<float> bandLimits = {353.5533906f, 707.1067812f, 1414.213562f, 2449.489743f, 3464.101615f, 4898.979486f, 6928.20323f};
+    vector<float> bandLimits = {176.776695296637f, 353.553390593274f,	707.106781186548f,	1414.21356237310f,	2828.42712474619f,	5656.85424949238f,	11313.7084989848f};
+    //vector<float> bandLimits = {250.0f*sqrtf(2), 500.0f*sqrtf(2), 1000.0f*sqrtf(2), 2000.0f*sqrtf(2), 4000.0f*sqrtf(2), 8000.0f*sqrtf(2), 16000.0f*sqrtf(2)};
+    expander->SetGroups(bandLimits);
 
     // Set the attack time for the expanders
-    auto numBands = expander.GetNumBands(filterGrouping);
+    auto numBands = expander->GetNumBands(filterGrouping);
     for (size_t i = 0; i < numBands; i++)
     {
-        expander.GetBandExpander(i, filterGrouping)->SetAttack(HL_ATTACK_TIME_MS);
-        expander.GetBandExpander(i, filterGrouping)->SetRelease(HL_RELEASE_TIME_MS);
+        expander->GetBandExpander(i, filterGrouping)->SetAttack(HL_ATTACK_TIME_MS);
+        expander->GetBandExpander(i, filterGrouping)->SetRelease(HL_RELEASE_TIME_MS);
     }
 
     // Process the input buffer
-    expander.Process(inputBuffer, outputBuffer);
+    expander->Process(inputBuffer, outputBuffer);
 
     // Access the individual filters process the input individually for each filter
-    Common::CGammatoneFilterBank &filterBank = expander.GetGammatoneFilterBank();
+    Common::CGammatoneFilterBank &filterBank = expander->GetGammatoneFilterBank();
     auto numFilters = filterBank.GetNumFilters();
     std::vector<CMonoBuffer<float>> filterOutputs;
     for (auto i = 0; i < numFilters; i++)
@@ -126,7 +128,7 @@ int main(int argc, char const *argv[])
     matioCpp::Vector<int> bandIndicesStart("bandIndicesStart");
     matioCpp::Vector<int> bandIndicesEnd("bandIndicesEnd");
     std::vector<int> startIndices, endIndices;
-    for (const auto& indices : expander.GetBandIndices()) {
+    for (const auto& indices : expander->GetBandIndices()) {
         startIndices.push_back(indices[0]);
         endIndices.push_back(indices[1]);
     }
