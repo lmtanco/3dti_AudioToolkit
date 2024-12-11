@@ -167,9 +167,9 @@ int main(int argc, char const *argv[])
     hearingLossSim.SetFromAudiometry_dBHL(Common::T_ear::LEFT, audiometryNoLoss);
     hearingLossSim.SetFromAudiometry_dBHL(Common::T_ear::RIGHT, audiometryCentralLoss);
 
-    // Create an array of stereo buffers as inputs with gains x1, x2, x4
+    // Create an array of stereo buffers as inputs with gains x0.5, x1, x2, x4, x8
     std::vector<Common::CEarPair<CMonoBuffer<float>>> stereoInputBuffers;
-    for (int i = 0; i < 3; i++)
+    for (int i = -1; i < 4; i++)
     {
         Common::CEarPair<CMonoBuffer<float>> stereoInputBuffer{inputBuffer, inputBuffer};
         stereoInputBuffer.left.ApplyGain(powf(2, i));
@@ -179,7 +179,7 @@ int main(int argc, char const *argv[])
 
     // Create an array of stereo buffers as outputs
     std::vector<Common::CEarPair<CMonoBuffer<float>>> stereoOutputBuffers;
-    for (int i = 0; i < 3; i++)
+    for (int i = -1; i < 4; i++)
     {
         Common::CEarPair<CMonoBuffer<float>> stereoOutputBuffer;
         stereoOutputBuffer.left.resize(inputBuffer.size());
@@ -188,15 +188,15 @@ int main(int argc, char const *argv[])
     }
 
     // Process the stereo buffers
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < 5; i++)
     {
         hearingLossSim.Process(stereoInputBuffers[i], stereoOutputBuffers[i]);
     }
 
     // Copy the stereo inputs to matio vectors
     std::vector< matioCpp::Vector<float> > stereoInputVectors;
-    std::string inputNames[3] = {"input_x1", "input_x2", "input_x4"};
-    for (int i = 0; i < 3; i++)
+    std::string inputNames[5] = {"input_x05", "input_x1", "input_x2", "input_x4", "input_x8"};
+    for (int i = 0; i < 5; i++)
     {
         matioCpp::Vector<float> Input(inputNames[i]);
         Input = stereoInputBuffers[i].left;
@@ -204,9 +204,9 @@ int main(int argc, char const *argv[])
     }
 
     // Copy the stereo outputs to matio vectors
-    std::string outputNames[3] = {"hearingLoss_x1_", "hearingLoss_x2_", "hearingLoss_x4_"};
+    std::string outputNames[5] = {"hearingLoss_x05_", "hearingLoss_x1_", "hearingLoss_x2_", "hearingLoss_x4_", "hearingLoss_x8_"};
     std::vector< matioCpp::Vector<float> > stereoOutputVectors;
-    for(int i = 0; i < 3; i++)
+    for(int i = 0; i < 5; i++)
     {
         matioCpp::Vector<float> stereoOutputLeft(outputNames[i] + "left");
         matioCpp::Vector<float> stereoOutputRight(outputNames[i] + "right");
@@ -219,11 +219,11 @@ int main(int argc, char const *argv[])
     // Save inputs and outputs to the mat file
     {
         matioCpp::File file = matioCpp::File::Create("testHL-06-stereoOutputs.mat");
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < 5; i++)
         {
             file.write(stereoInputVectors[i]);
         }
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < 5; i++)
         {
             file.write(stereoOutputVectors[i*2]);
             file.write(stereoOutputVectors[i*2+1]);
