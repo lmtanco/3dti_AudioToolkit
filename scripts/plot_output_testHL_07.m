@@ -13,23 +13,7 @@ function plot_output_testHL_07()
     inputSignal = inputData.inputVector;
     outputSignal = outputData.outputVector;
     
-    % Load hearing loss data
-    % inputSignal_x05 = stereoOutputsData.input_x05;
-    % inputSignal_x1 = stereoOutputsData.input_x1;
-    % inputSignal_x2 = stereoOutputsData.input_x2;
-    % inputSignal_x4 = stereoOutputsData.input_x4;
-    % inputSignal_x8 = stereoOutputsData.input_x8;
-    % hearingLossLeftSignal_x05 = stereoOutputsData.hearingLoss_x05_left;
-    % hearingLossRightSignal_x05 = stereoOutputsData.hearingLoss_x05_right;
-    % hearingLossLeftSignal = stereoOutputsData.hearingLoss_x1_left;
-    % hearingLossRightSignal = stereoOutputsData.hearingLoss_x1_right;
-    % hearingLossLeftSignal_x2 = stereoOutputsData.hearingLoss_x2_left;
-    % hearingLossRightSignal_x2 = stereoOutputsData.hearingLoss_x2_right;
-    % hearingLossLeftSignal_x4 = stereoOutputsData.hearingLoss_x4_left;
-    % hearingLossRightSignal_x4 = stereoOutputsData.hearingLoss_x4_right;
-    % hearingLossLeftSignal_x8 = stereoOutputsData.hearingLoss_x8_left;
-    % hearingLossRightSignal_x8 = stereoOutputsData.hearingLoss_x8_right;
-    
+   
     % Load individual filter outputs in a cell array
     % Each individual filter is called filterOutputVector_i , i = 00, 01, 02, ...41
     individualFilterOutputs = cell(1, 42);
@@ -55,21 +39,7 @@ function plot_output_testHL_07()
     % Convert signals to double
     inputSignal = double(inputSignal);
     outputSignal = double(outputSignal);
-    % inputSignal_x05 = double(inputSignal_x05);
-    % inputSignal_x1 = double(inputSignal_x1);
-    % inputSignal_x2 = double(inputSignal_x2);
-    % inputSignal_x4 = double(inputSignal_x4);
-    % inputSignal_x8 = double(inputSignal_x8);
-    % hearingLossLeftSignal_x05 = double(hearingLossLeftSignal_x05);
-    % hearingLossRightSignal_x05 = double(hearingLossRightSignal_x05);
-    % hearingLossLeftSignal = double(hearingLossLeftSignal);
-    % hearingLossRightSignal = double(hearingLossRightSignal);
-    % hearingLossLeftSignal_x2 = double(hearingLossLeftSignal_x2);
-    % hearingLossRightSignal_x2 = double(hearingLossRightSignal_x2);
-    % hearingLossLeftSignal_x4 = double(hearingLossLeftSignal_x4);
-    % hearingLossRightSignal_x4 = double(hearingLossRightSignal_x4);
-    % hearingLossLeftSignal_x8 = double(hearingLossLeftSignal_x8);
-    % hearingLossRightSignal_x8 = double(hearingLossRightSignal_x8);
+
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIGURE 1: POWER SPECTRAL DENSITY USING PWELCH %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % Calculate the PSD using pwelch

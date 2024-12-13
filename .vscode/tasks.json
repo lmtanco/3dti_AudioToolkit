@@ -33,6 +33,15 @@
             },
             "problemMatcher": ["$gcc"],
             "detail": "Tarea generada por el depurador."
+        },
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "cmake --build build --target testHL-07",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
         }
     ]
 }

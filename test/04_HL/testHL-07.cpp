@@ -16,6 +16,14 @@
 // These two numbers above give the following bands:
 // 125, 250, 500, 1000, 2000, 4000, 8000, 16000,
 
+// However later the grouping is expressed via the band limits
+// 353.5533906, 707.1067812, 1414.213562, 2449.489743, 3464.101615, 4898.979486, 6928.20323, which come from the bands
+// 250, 500, 1000, 2000, 3000, 4000, 6000, 8000
+
+// 353.553 = 250*sqrt(2)
+// 707.106 = 500*sqrt(2)
+// 1414.213 = 1000*sqrt(2)
+
 
 #define HL_ATTACK_TIME_MS 200
 #define HL_RELEASE_TIME_MS 50
