@@ -23,7 +23,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build",
+            "preLaunchTask": "build-04",
             "logging": {
                 "engineLogging": true
             }
@@ -46,7 +46,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build",
+            "preLaunchTask": "build-05",
             "logging": {
                 "engineLogging": true
             }
@@ -69,7 +69,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build",
+            "preLaunchTask": "build-06",
             "logging": {
                 "engineLogging": true
             }
@@ -92,7 +92,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "build",
+            "preLaunchTask": "build-07",
             "logging": {
                 "engineLogging": true
             }
