@@ -1,0 +1,46 @@
+@startuml
+actor User
+participant CHearingLossSim
+participant CMultibandExpander
+participant CDynamicExpanderMono
+
+User -> CHearingLossSim: SetMultibandExpanderParameters(multibandExpander, bandIndex, audiometry, filterGrouping)
+activate CHearingLossSim
+
+CHearingLossSim -> CHearingLossSim: CalculateThresholdFromDBHL(dBHL)
+activate CHearingLossSim
+CHearingLossSim --> CHearingLossSim: return threshold_dBSPL
+deactivate CHearingLossSim
+
+CHearingLossSim -> CHearingLossSim: CalculateDBFSFromDBSPL(dBSPL)
+activate CHearingLossSim
+CHearingLossSim --> CHearingLossSim: return threshold_dBFS
+deactivate CHearingLossSim
+
+CHearingLossSim -> CHearingLossSim: CalculateRatioFromDBHL(dBHL)
+activate CHearingLossSim
+CHearingLossSim --> CHearingLossSim: return ratio
+deactivate CHearingLossSim
+
+CHearingLossSim -> CMultibandExpander: GetBandFrequency(bandIndex, filterGrouping)
+activate CMultibandExpander
+CMultibandExpander --> CHearingLossSim: return bandFrequency
+deactivate CMultibandExpander
+
+CHearingLossSim -> CMultibandExpander: GetBandExpander(bandIndex, filterGrouping)
+activate CMultibandExpander
+CMultibandExpander --> CHearingLossSim: return bandExpander
+deactivate CMultibandExpander
+
+CHearingLossSim -> CDynamicExpanderMono: SetThreshold(threshold_dBFS)
+activate CDynamicExpanderMono
+CDynamicExpanderMono --> CHearingLossSim: return
+deactivate CDynamicExpanderMono
+
+CHearingLossSim -> CDynamicExpanderMono: SetRatio(ratio)
+activate CDynamicExpanderMono
+CDynamicExpanderMono --> CHearingLossSim: return
+deactivate CDynamicExpanderMono
+
+deactivate CHearingLossSim
+@enduml

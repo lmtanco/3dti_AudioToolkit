@@ -1,0 +1,87 @@
+@startuml
+actor User
+
+participant CHearingLossSim
+participant CMultibandExpander
+
+User -> CHearingLossSim: SetFromAudiometry_dBHL(ear, hearingLevels_dBHL)
+activate CHearingLossSim
+
+CHearingLossSim -> CHearingLossSim: SetHearingLevel_dBHL(ear, i, hearingLevels_dBHL[i])
+activate CHearingLossSim
+
+CHearingLossSim -> CHearingLossSim: CalculateAttenuationFromDBHL(hearingLevels_dBHL[i])
+activate CHearingLossSim
+deactivate CHearingLossSim
+
+CHearingLossSim -> CMultibandExpander: SetAttenuationForOctaveBand(bandIndex, attenuation)
+activate CMultibandExpander
+deactivate CMultibandExpander
+
+CHearingLossSim -> CHearingLossSim: SetMultibandExpanderParameters(multibandExpander, bandIndex, audiometries, filterGrouping)
+activate CHearingLossSim
+
+CHearingLossSim -> CHearingLossSim: CalculateThresholdFromDBHL(dBHL)
+activate CHearingLossSim
+deactivate CHearingLossSim
+
+CHearingLossSim -> CHearingLossSim: CalculateDBFSFromDBSPL(dBSPL)
+activate CHearingLossSim
+deactivate CHearingLossSim
+
+CHearingLossSim -> CHearingLossSim: CalculateRatioFromDBHL(dBHL)
+activate CHearingLossSim
+deactivate CHearingLossSim
+
+CHearingLossSim -> CMultibandExpander: GetBandFrequency(i, filterGrouping)
+activate CMultibandExpander
+deactivate CMultibandExpander
+
+CHearingLossSim -> CMultibandExpander: GetBandExpander(i, filterGrouping)
+activate CMultibandExpander
+deactivate CMultibandExpander
+
+deactivate CHearingLossSim
+
+deactivate CHearingLossSim
+
+CHearingLossSim -> CHearingLossSim: SetHearingLevel_dBHL(ear, i+1, hearingLevels_dBHL[i+1])
+activate CHearingLossSim
+
+CHearingLossSim -> CHearingLossSim: CalculateAttenuationFromDBHL(hearingLevels_dBHL[i+1])
+activate CHearingLossSim
+deactivate CHearingLossSim
+
+CHearingLossSim -> CMultibandExpander: SetAttenuationForOctaveBand(bandIndex, attenuation)
+activate CMultibandExpander
+deactivate CMultibandExpander
+
+CHearingLossSim -> CHearingLossSim: SetMultibandExpanderParameters(multibandExpander, bandIndex, audiometries, filterGrouping)
+activate CHearingLossSim
+
+CHearingLossSim -> CHearingLossSim: CalculateThresholdFromDBHL(dBHL)
+activate CHearingLossSim
+deactivate CHearingLossSim
+
+CHearingLossSim -> CHearingLossSim: CalculateDBFSFromDBSPL(dBSPL)
+activate CHearingLossSim
+deactivate CHearingLossSim
+
+CHearingLossSim -> CHearingLossSim: CalculateRatioFromDBHL(dBHL)
+activate CHearingLossSim
+deactivate CHearingLossSim
+
+CHearingLossSim -> CMultibandExpander: GetBandFrequency(i, filterGrouping)
+activate CMultibandExpander
+deactivate CMultibandExpander
+
+CHearingLossSim -> CMultibandExpander: GetBandExpander(i, filterGrouping)
+activate CMultibandExpander
+deactivate CMultibandExpander
+
+deactivate CHearingLossSim
+
+deactivate CHearingLossSim
+
+deactivate CHearingLossSim
+@enduml

@@ -1,0 +1,36 @@
+@startuml HLClasses
+object testHL_06 {
+    CHearingLossSim hearingLossSim
+    CGammatoneMultibandExpander expander_left
+    CGammatoneMultibandExpander expander_right
+}
+
+testHL_06 : hearingLossSim.Setup(SAMPLINGFREQ, HL_DBS_SPL_FOR_0_DBS_FS, HL_BANDS_NUMBER, inputBuffer.size())
+testHL_06 : expander_left.Setup(SAMPLINGFREQ, HL_INITIAL_FREQ_HZ, HL_BANDS_NUMBER, filterGrouping)
+testHL_06 : expander_right.Setup(SAMPLINGFREQ, HL_INITIAL_FREQ_HZ, HL_BANDS_NUMBER, filterGrouping)
+testHL_06 : hearingLossSim.SetMultibandExpander(Common::T_ear::LEFT, expander_left)
+testHL_06 : hearingLossSim.SetMultibandExpander(Common::T_ear::RIGHT, expander_right)
+
+
+class CHearingLossSim {
+    -CGammatoneMultibandExpander expander_left
+    -CGammatoneMultibandExpander expander_right
+    +void SetMultibandExpanderParameters()
+}
+
+abstract class MultibandExpander {
+    +void CalculateAttenuationFactor()
+    +void SetAttenuationForOctaveBand(int bandIndex, float attenuation)
+}
+
+class CGammatoneMultibandExpander extends MultibandExpander {
+    +void CalculateAttenuationFactor()
+    +void SetAttenuationForOctaveBand(int bandIndex, float attenuation)
+}
+
+CHearingLossSim "1" *-- "2" CGammatoneMultibandExpander
+MultibandExpander <|-- CGammatoneMultibandExpander
+
+
+
+@enduml

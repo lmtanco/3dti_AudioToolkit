@@ -1,0 +1,53 @@
+@startuml
+start
+
+if (bandIndex == 0) then (yes)
+    :get posteriorBandFrequency;
+    :get posteriorBandAttenuation;
+    while (i < numBands) is (true)
+        :get expanderFrequency;
+        if (expanderFrequency < bandFrequency) then (yes)
+            :calculate threshold_dBSPL;
+            :calculate threshold_dBFS;
+            :calculate ratio;
+        else if (expanderFrequency > bandFrequency && expanderFrequency < posteriorBandFrequency) then (yes)
+            :calculate previousFactor;
+            :calculate posteriorFactor;
+            :calculate threshold_dBSPL;
+            :calculate threshold_dBFS;
+            :calculate ratio;
+        else if (abs(expanderFrequency - bandFrequency) < 0.1f) then (yes)
+            :calculate threshold_dBSPL;
+            :calculate threshold_dBFS;
+            :calculate ratio;
+        endif
+        :SetThreshold(threshold_dBFS);
+        :SetRatio(ratio);
+    endwhile
+else if (bandIndex == audiometry.size() - 1) then (yes)
+    :get previousBandFrequency;
+    :get previousBandAttenuation;
+    while (i >= 0) is (true)
+        :get expanderFrequency;
+        if (expanderFrequency > bandFrequency) then (yes)
+            :calculate threshold_dBSPL;
+            :calculate threshold_dBFS;
+            :calculate ratio;
+        else if (expanderFrequency < bandFrequency && expanderFrequency > previousBandFrequency) then (yes)
+            :calculate previousFactor;
+            :calculate posteriorFactor;
+            :calculate threshold_dBSPL;
+            :calculate threshold_dBFS;
+            :calculate ratio;
+        else if (abs(expanderFrequency - bandFrequency) < 0.1f) then (yes)
+            :calculate threshold_dBSPL;
+            :calculate threshold_dBFS;
+            :calculate ratio;
+        endif
+        :SetThreshold(threshold_dBFS);
+        :SetRatio(ratio);
+    endwhile
+endif
+
+stop
+@enduml
