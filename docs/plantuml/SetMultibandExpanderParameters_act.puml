@@ -1,4 +1,4 @@
-@startuml
+@startuml SetMultibandExpanderParameters
 start
 
 if (bandIndex == 0) then (yes)
@@ -47,7 +47,31 @@ else if (bandIndex == audiometry.size() - 1) then (yes)
         :SetThreshold(threshold_dBFS);
         :SetRatio(ratio);
     endwhile
-endif
-
+else 
+    :get previousBandFrequency;
+    :get previousBandAttenuation;
+    :get posteriorBandFrequency;
+    :get posteriorBandAttenuation;
+    while (i >= 0) is (true)
+        :get expanderFrequency;
+        if (expanderFrequency > bandFrequency) then (yes)
+            :calculate threshold_dBSPL;
+            :calculate threshold_dBFS;
+            :calculate ratio;
+        else if (expanderFrequency < bandFrequency && expanderFrequency > previousBandFrequency) then (yes)
+            :calculate previousFactor;
+            :calculate posteriorFactor;
+            :calculate threshold_dBSPL;
+            :calculate threshold_dBFS;
+            :calculate ratio;
+        else if (abs(expanderFrequency - bandFrequency) < 0.1f) then (yes)
+            :calculate threshold_dBSPL;
+            :calculate threshold_dBFS;
+            :calculate ratio;
+        endif
+        :SetThreshold(threshold_dBFS);
+        :SetRatio(ratio);
+    endwhile
+endif 
 stop
 @enduml
