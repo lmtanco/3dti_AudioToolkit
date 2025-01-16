@@ -9,11 +9,6 @@
  * 
  */
 
-#define SAMPLINGFREQ 48000
-#define HL_INITIAL_FREQ_HZ 250
-#define HL_BANDS_NUMBER 8
-#define HL_ATTACK_TIME_MS 200
-#define HL_RELEASE_TIME_MS 50
 
 #include <HAHLSimulation/GammatoneMultibandExpander.h>  
 #include <Common/Buffer.h>

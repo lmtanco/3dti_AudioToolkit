@@ -59,8 +59,8 @@ int main(int argc, char const *argv[])
     expander_right->Setup(SAMPLINGFREQ, HL_INITIAL_FREQ_HZ, HL_BANDS_NUMBER, filterGrouping);
     // Audiometry band limits.
     // Note that the band limits are strange, not octaves. 
-    //vector<float> bandLimits = {353.5533906f, 707.1067812f, 1414.213562f, 2449.489743f, 3464.101615f, 4898.979486f, 6928.20323f};
-    vector<float> bandLimits = {176.776695296637f, 353.553390593274f,	707.106781186548f,	1414.21356237310f,	2828.42712474619f,	5656.85424949238f,	11313.7084989848f};
+    vector<float> bandLimits = {353.5533906f, 707.1067812f, 1414.213562f, 2449.489743f, 3464.101615f, 4898.979486f, 6928.20323f};
+    //vector<float> bandLimits = {176.776695296637f, 353.553390593274f,	707.106781186548f,	1414.21356237310f,	2828.42712474619f,	5656.85424949238f,	11313.7084989848f};
     //vector<float> bandLimits = {250.0f*sqrtf(2), 500.0f*sqrtf(2), 1000.0f*sqrtf(2), 2000.0f*sqrtf(2), 4000.0f*sqrtf(2), 8000.0f*sqrtf(2), 16000.0f*sqrtf(2)};
     expander_left->SetGroups(bandLimits);
     expander_right->SetGroups(bandLimits);
@@ -161,7 +161,9 @@ int main(int argc, char const *argv[])
 
     // Declare a vector to store the audiometry values
     std::vector<float> audiometryNoLoss = {0,0,0,0,0,0,0,0};
-    std::vector<float> audiometryCentralLoss = {0,0,0,50,50,0,0,0};
+
+    // This are audiometry values for frequencies {250, 500, 1000, 2000, 3000, 4000, 6000, 8000}
+    std::vector<float> audiometryCentralLoss =      {0,   0,    0,   50,   50,    0,    0,    0};
 
     // Set the audiometry values
     hearingLossSim.SetFromAudiometry_dBHL(Common::T_ear::LEFT, audiometryNoLoss);

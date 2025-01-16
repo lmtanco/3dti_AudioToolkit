@@ -160,8 +160,8 @@ if (BUILD_HL_TESTS)
     include (CTest)
     enable_testing()
     # Declare tests for Hearing Loss simulation
-    # set(TESTSHL 01 02 03 04 05 06 07 )
-    set(TESTSHL 07)  
+    # set(TESTSHL 01 02 03 04 05 06 07 08)
+    set(TESTSHL 08)  
     foreach(TEST ${TESTSHL})
 
         add_executable(testHL-${TEST} test/04_HL/testHL-${TEST}.cpp)  # Añade el ejecutable
