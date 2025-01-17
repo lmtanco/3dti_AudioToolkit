@@ -39,6 +39,13 @@
 #define DEFAULT_RELEASE 100
 #define LINEAR_GAIN_CORRECTION_GAMMATONE 4					// equivalent to 12dB gain
 
+// Compilation time macro to pass an attenuation in DBs to a linear gain factor
+// a positive attenuation means a gain factor less than 1, so we change the sign of the attenuation
+// before calculation
+constexpr float attenuationToGain(float attenuation_dB) {
+    return std::pow(10, -attenuation_dB / 20.0f);
+}
+
 namespace HAHLSimulation 
 {
 
@@ -88,9 +95,16 @@ public:
      * \param [in] inputBuffer input buffer
      * \param [out] outputBuffer output buffer
      */
-    void Process(CMonoBuffer<float> & inputBuffer, CMonoBuffer<float> & outputBuffer){
+    void Process(CMonoBuffer<float> & inputBuffer, CMonoBuffer<float> & outputBuffer, bool filterGrouping = false){
         ASSERT(setupDone, RESULT_ERROR_NOTALLOWED, "Setup not done", "");
         ASSERT(inputBuffer.size() == outputBuffer.size(), RESULT_ERROR_BADSIZE, "Input and output buffer sizes do not match", "");
+
+        // Process the input buffer
+        if (filterGrouping) {
+            ProcessGrouping(inputBuffer, outputBuffer);
+        } else {
+            ProcessNoGrouping(inputBuffer, outputBuffer);
+        }
 
     }
 
@@ -112,9 +126,16 @@ public:
 
 private: 
 
-    /** \brief Private function doing the real work of Setup */
+    /** \brief Private function doing the real work of Setup 
+     * \details This function is called by the public Setup functions. It is templated to allow for different types of input iterators. 
+     * The function sets up the filter bank and expanders for the individual filters and bands. It also stores practical info about the bands and filters, 
+     * such as what filter belongs to what band or what is the lower and upper limit of each band. 
+     * \param [in] samplingRate sampling rate in samples per second
+     * \param [in] begin iterator to the beginning of the band centers
+     * \param [in] end iterator to the end of the band centers
+     */
     template <typename Iterator>
-    void SetupImpl(int samplingRate, Iterator begin, Iterator end)q{
+    void SetupImpl(int samplingRate, Iterator begin, Iterator end){
 
         // Check input parameters
         ASSERT((samplingRate > 0), RESULT_ERROR_INVALID_PARAM, "Invalid sampling rate", "");
@@ -151,7 +172,6 @@ private:
             band.centerFrequency_Hz = *it;
             band.expander = std::make_unique<Common::CDynamicExpanderMono>();
             band.expander->Setup(samplingRate, DEFAULT_RATIO, DEFAULT_THRESHOLD, DEFAULT_ATTACK, DEFAULT_RELEASE);
-            band.gain_dB = 0.0f;
             bands.push_back(std::move(band));
         }   
 
@@ -189,6 +209,48 @@ private:
         setupDone = true;
 
     }
+
+    /** \brief Process the input buffer without grouping 
+     * \details This function is called when the Process function is called with filterGrouping set to false. Each filter is processed individually
+     * \param [in] inputBuffer input buffer
+     * \param [out] outputBuffer output buffer
+     */
+    void ProcessNoGrouping(CMonoBuffer<float> & inputBuffer, CMonoBuffer<float> & outputBuffer){}
+
+    /** \brief Process the input buffer with grouping 
+     * \details This function is called when the Process function is called with filterGrouping set to true. The input buffer is processed by the multiband expander. The result is returned in the output buffer
+     * \param [in] inputBuffer input buffer
+     * \param [out] outputBuffer output buffer
+     */
+    void ProcessGrouping(CMonoBuffer<float> & inputBuffer, CMonoBuffer<float> & outputBuffer){
+
+        for (int bandIndex=0; bandIndex < bands.size(); bandIndex++)
+        {
+            CMonoBuffer<float> oneBandBuffer(inputBuffer.size(), 0.0f);
+
+		    // Process eq for each band, mixing eq process of all internal band filters
+            for (int filterIndex = bands[bandIndex].lowerIndex; filterIndex<= bands[bandIndex].upperIndex; filterIndex++) {
+                CMonoBuffer<float> oneFilterOuptutBuffer(inputBuffer.size());
+                filters[filterIndex].filter->Process(inputBuffer, oneFilterOuptutBuffer);
+                oneBandBuffer += oneFilterOuptutBuffer;
+            }
+
+            // Apply gain correction 
+            oneBandBuffer.ApplyGain(LINEAR_GAIN_CORRECTION_GAMMATONE);
+
+            // Process expander for each band. 
+            bands[bandIndex].expander->Process(oneBandBuffer);
+
+            // Apply attenuation for each band
+            oneBandBuffer.ApplyGain(attenuationToGain(bands[bandIndex].attenuation_dB));
+
+            // Mix into output buffer
+            outputBuffer += oneBandBuffer;
+
+        }
+    }
+
+
 public: 
 
     // Reset the setup
@@ -210,8 +272,8 @@ public:
         // Expander for the filter
         std::unique_ptr<Common::CDynamicExpanderMono> expander;
 
-        // Gain in dB for the filter
-        float gain_dB{0.0f};
+        // Attenuation in dB for the filter. A possitive value means attenuation, a negative value means gain
+        float attenuation_dB{0.0f};
 
     };
     std::vector<FilterInfo> filters;
@@ -225,8 +287,8 @@ public:
         // Expander for the band
         std::unique_ptr<Common::CDynamicExpanderMono> expander;
 
-        // Gain in dB for the band
-        float gain_dB{0.0f};
+        // Attenuation in dB for the band. A possitive value means attenuation, a negative value means gain
+        float attenuation_dB{0.0f};
 
         // Lower and upper limits for the band
         float lowerLimit_Hz{0.0f};
