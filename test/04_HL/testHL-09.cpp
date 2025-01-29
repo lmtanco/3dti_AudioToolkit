@@ -60,6 +60,34 @@ int main()
    
     }
 
+    // Copy the input and output to matio vectors
+    matioCpp::Vector<float> inputVector("inputVector");
+    matioCpp::Vector<float> outputVector("outputVector");
+    inputVector = inputBuffer;
+    outputVector = outputBuffer;
+
+    // Save the input to a mat file
+    {
+        matioCpp::File file = matioCpp::File::Create("testHL-09-input.mat");
+        file.write(inputVector);
+    }
+    // Save the output to a mat file
+    {
+        matioCpp::File file = matioCpp::File::Create("testHL-09-output.mat");
+        file.write(outputVector);
+    }
+    // Save the individual filter outputs to a mat file
+    {
+        matioCpp::File file = matioCpp::File::Create("testHL-09-filterOutputs.mat");
+        for (auto i = 0; i < numFilters; i++)
+        {
+            std::ostringstream oss;
+            oss << "filterOutputVector_" << std::setw(2) << std::setfill('0') << i;
+            matioCpp::Vector<float> filterOutputVector(oss.str());
+            filterOutputVector = filterOutputs[i];
+            file.write(filterOutputVector);
+        }
+    }   
 
 }
 

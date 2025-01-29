@@ -14,3 +14,5 @@ scripts/*/*.autosave
 
 #Ignore matlab outputs
 *.asv
+scripts/output/*
+

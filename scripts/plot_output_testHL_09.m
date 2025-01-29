@@ -1,8 +1,8 @@
 function plot_output_testHL_03()
 
-inputData = open('../build/Debug/testHL-04-input.mat');
-outputData = open('../build/Debug/testHL-04-output.mat');
-individualFilterOutputData = open('../build/Debug/testHL-04-filterOutputs.mat');
+inputData = open('../build/Debug/testHL-09-input.mat');
+outputData = open('../build/Debug/testHL-09-output.mat');
+individualFilterOutputData = open('../build/Debug/testHL-09-filterOutputs.mat');
 
 % Test assumes data is in 'inputVector' y 'outputVector'
 inputSignal = inputData.inputVector;
@@ -82,7 +82,6 @@ ylabel('Magnitude (dB)');
 grid on;
 hold on;
 
-
 % Plot the individual filter transfer functions
 for i = 1:length(individualFilterOutputs)
     [pxx_filter, f_filter] = pwelch(individualFilterOutputs{i}, segment_length, noverlap, nfft, fs);
@@ -91,7 +90,7 @@ for i = 1:length(individualFilterOutputs)
 end
 
 % Save the last figure to a file
-saveas(gcf, 'output/testHL_04.png'); % TODO: Make the working directory configurable as function parameter
+saveas(gcf, 'output/testHL_09.png'); % TODO: Make the working directory configurable as function parameter
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% FIGURE 2: OCTAVE POWER SPECTRAL DENSITY %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -130,6 +129,6 @@ set(h, 'FaceColor', 'k');
 title_str = sprintf('Octave power spectral density estimation, max freq: %d Hz, one band per octave (TRANSFER F.)', freq_limit);
 title(title_str);
 
-% waitfor(gcf);
+%waitfor(gcf);
 
 end

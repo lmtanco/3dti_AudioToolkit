@@ -17,7 +17,12 @@ Each test creates output files that can be read later by the corresponding matla
   * uses different groupings (octave bands this time), where group limits are ``{176.776695296637f, 353.553390593274f,	707.106781186548f,	1414.21356237310f,	2828.42712474619f,	5656.85424949238f,	11313.7084989848f}``
   * outputs also information allowing to represent the bands later in matlab
 
-* [testHL-08.cpp](./testHL-08.cpp): work in progress to test the new implementation of the gammatone filter bank, tries to get the same output as testHL-04.cpp but with the new, simpler class. This first test just tests the validity of the Setup function overloads. 
+## Gammatone tests (new simpler class)
+
+ work in progress to test the new implementation of the gammatone filter bank, trying to get same output as previous tests. 
+
+* [testHL-08.cpp](./testHL-08.cpp): This first test just tests the validity of the Setup function overloads. 
+* [testHL-09.cpp](./testHL-09.cpp): Tries to gest same results as [testHL-04.cpp](./testHL-04.cpp). 
 
 ## Hearing Loss simulation tests
 

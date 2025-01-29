@@ -161,7 +161,13 @@ if (BUILD_HL_TESTS)
     enable_testing()
     # Declare tests for Hearing Loss simulation
     # set(TESTSHL 01 02 03 04 05 06 07 08 09)
-    set(TESTSHL 04 08 09)  
+    set(TESTSHL 04 09)  
+
+    # Test 09 depends on 04 so make sure 04 is present in the list
+    if (NOT "04" IN_LIST TESTSHL AND "09" IN_LIST TESTSHL)
+        message(FATAL_ERROR "Test 09 depends on test 04. Please include test 04 in the list of tests")
+    endif()
+
     foreach(TEST ${TESTSHL})
 
         add_executable(testHL-${TEST} test/04_HL/testHL-${TEST}.cpp)  # Añade el ejecutable
@@ -191,5 +197,10 @@ if (BUILD_HL_TESTS)
         #Add a custom test to run the MATLAB script after the test
         add_test(NAME plot_output_testHL_${TEST} COMMAND ${Matlab_MAIN_PROGRAM} -batch "plot_output_testHL_${TEST}" WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/scripts)
         set_tests_properties(plot_output_testHL_${TEST} PROPERTIES DEPENDS testHL-${TEST}) # This test depends on the previous one
+
+        #Display the images output by the matlab scripts
+        add_test(NAME display_output_testHL_${TEST} COMMAND open ${CMAKE_CURRENT_SOURCE_DIR}/scripts/output/testHL_${TEST}.png)
+
     endforeach()
+
 endif()
