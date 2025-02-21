@@ -153,6 +153,8 @@ private:
 
         // Create the filter bank and per-filter expanders 
         Common::CGammatoneFilterBank gammatoneFilterBank(samplingRate);
+
+        // Use default EAR MODEL
         gammatoneFilterBank.InitWithFreqRangeOverlap(20, 20000, 0.0, Common::CGammatoneFilterBank::EAR_MODEL_DEFAULT);
 
         // Store filter bank and expanders. With respect to CGammatoneMultibandExpander, we are not storing the expanders in a vector, but in the bands vector  
@@ -183,7 +185,7 @@ private:
                 bands[i].lowerLimit_Hz = std::sqrt(bands[i].centerFrequency_Hz * bands[i - 1].centerFrequency_Hz);
             }
             if (i == bands.size() - 1){
-                bands[i].upperLimit_Hz = 30000.0f;
+                bands[i].upperLimit_Hz = 30000.0f; // FIXME: What if upper band goes beyond 30000 Hz?
             } else {
                 bands[i].upperLimit_Hz = std::sqrt(bands[i].centerFrequency_Hz * bands[i + 1].centerFrequency_Hz);
             }
@@ -215,7 +217,27 @@ private:
      * \param [in] inputBuffer input buffer
      * \param [out] outputBuffer output buffer
      */
-    void ProcessNoGrouping(CMonoBuffer<float> & inputBuffer, CMonoBuffer<float> & outputBuffer){}
+    void ProcessNoGrouping(CMonoBuffer<float> & inputBuffer, CMonoBuffer<float> & outputBuffer){
+        for (int filterIndex = 0; filterIndex < filters.size(); filterIndex++){
+            
+            // Process the input buffer with the filter
+            CMonoBuffer<float> oneFilterBuffer(inputBuffer.size());
+            filters[filterIndex].filter->Process(inputBuffer, oneFilterBuffer);
+            
+            // Apply gain correction
+            oneFilterBuffer.ApplyGain(LINEAR_GAIN_CORRECTION_GAMMATONE);
+            
+            // Process the expander for the filter
+            filters[filterIndex].expander->Process(oneFilterBuffer);
+            
+            // Apply attenuation for the filter
+            oneFilterBuffer.ApplyGain(attenuationToGain(filters[filterIndex].attenuation_dB));
+            
+            // Mix into output buffer
+            outputBuffer += oneFilterBuffer;
+    
+        }
+    }
 
     /** \brief Process the input buffer with grouping 
      * \details This function is called when the Process function is called with filterGrouping set to true. The input buffer is processed by the multiband expander. The result is returned in the output buffer
