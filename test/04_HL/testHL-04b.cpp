@@ -60,8 +60,9 @@ int main(int argc, char const *argv[])
         expander.GetBandExpander(i, filterGrouping)->SetRelease(HL_RELEASE_TIME_MS);
     }
 
-    // Process the input buffer
-    expander.Process(inputBuffer, outputBuffer);
+    // Process the input buffer: this applies the correction, let's do it later, manually
+    // expander.Process(inputBuffer, outputBuffer);
+    outputBuffer.Fill(outputBuffer.size(), 0.0f);   
 
     // Now compute the per-group output
     Common::CGammatoneFilterBank &filterBank = expander.GetGammatoneFilterBank();
@@ -79,6 +80,9 @@ int main(int argc, char const *argv[])
             bandOutputBuffer += filterOutputBuffer;
         }
         bandOutputBuffers.push_back(bandOutputBuffer);
+
+        // Manually mix into the output buffer 
+        outputBuffer += bandOutputBuffer;
     }
         
 
