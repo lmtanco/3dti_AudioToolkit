@@ -85,11 +85,13 @@ figure;
 % Change name of whole figure
 set(gcf, 'Name', 'GAMMATONE FILTER BANK TRANSFER FUNCTION');
 % Use a thicker line for the transfer function
-plot(f_input_khz, 10*log10(transfer_function), 'k', 'LineWidth', 2); % 'k' specifies the color black, 'LineWidth' sets the thickness
-title_str = sprintf('Gammatone Transfer Function spectral power distribution using Welch with %d ms segments, fft with %d length', segment_length/fs*1000, nfft);
+semilogx(f_input, 10*log10(transfer_function), 'k', 'LineWidth', 2); % 'k' specifies the color black, 'LineWidth' sets the thickness
+%title_str = sprintf('Gammatone Transfer Function spectral power distribution using Welch with %d ms segments, fft with %d length', segment_length/fs*1000, nfft);
+title('Gammatone Filter Bank Transfer Function');
 title(title_str);
-xlabel('Frequency (kHz)');
+xlabel('Frequency (Hz)');
 ylabel('Magnitude (dB)');
+set(gca, 'XTick', [125, 250, 500, 1000, 2000, 3000, 4000, 6000, 8000, 20000]); % Set more ticks on x-axis
 grid on;
 hold on;
 
@@ -98,7 +100,7 @@ hold on;
 for i = 1:length(individualFilterOutputs)
     [pxx_filter, f_filter] = pwelch(individualFilterOutputs{i}, segment_length, noverlap, nfft, fs);
     transfer_function_filter = pxx_filter ./ pxx_input;
-    plot(f_filter/1000, 10*log10(transfer_function_filter), 'Color', colormap(i, :)); % Use unique color from colormap
+    semilogx(f_filter, 10*log10(transfer_function_filter), 'Color', colormap(i, :)); % Use unique color from colormap
 end
 
 % Save the last figure to a file
@@ -150,11 +152,13 @@ bandcolormap = jet(length(bandFilterOutputs));
 % Change name of whole figure
 set(gcf, 'Name', 'BAND POWER SPECTRUM');
 % Use a thicker line for the transfer function
-plot(f_input_khz, 10*log10(transfer_function), 'k', 'LineWidth', 2); % 'k' specifies the color black, 'LineWidth' sets the thickness
-title_str = sprintf('Band Transfer Function spectral power distribution using Welch with %d ms segments, fft with %d length', segment_length/fs*1000, nfft);
+semilogx(f_input, 10*log10(transfer_function), 'k', 'LineWidth', 2); % 'k' specifies the color black, 'LineWidth' sets the thickness
+%title_str = sprintf('Band Transfer Function spectral power distribution using Welch with %d ms segments, fft with %d length', segment_length/fs*1000, nfft);
+title_str = sprintf('Band Transfer Function spectral power distribution');
 title(title_str);
-xlabel('Frequency (kHz)');
+xlabel('Frequency (Hz)');
 ylabel('Magnitude (dB)');
+set(gca, 'XTick', [125, 250, 500, 1000, 2000, 3000, 4000, 6000, 8000, 20000]); % Set more ticks on x-axis
 grid on;
 hold on;
 
@@ -162,7 +166,7 @@ hold on;
 for i = 1:length(bandFilterOutputs)
     [pxx_band, f_band] = pwelch(bandFilterOutputs{i}, segment_length, noverlap, nfft, fs);
     transfer_function_band = pxx_band ./ pxx_input;
-    plot(f_band/1000, 10*log10(transfer_function_band), 'Color', bandcolormap(i, :)); % Use unique color from colormap
+    semilogx(f_band, 10*log10(transfer_function_band), 'Color', bandcolormap(i, :)); % Use unique color from colormap
 end
 
 % Save the last figure to a file
