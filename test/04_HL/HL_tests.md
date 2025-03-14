@@ -19,6 +19,8 @@ Each test creates output files that can be read later by the corresponding matla
   * uses different groupings (octave bands this time), where group limits are ``{176.776695296637f, 353.553390593274f,	707.106781186548f,	1414.21356237310f,	2828.42712474619f,	5656.85424949238f,	11313.7084989848f}``
   * outputs also information allowing to represent the bands later in matlab
 
+*  [testHL-05b.cpp](./testHL-05b.cpp): equal to test-04b.cpp, outputs each group (band) of filters but with octave bands like test-05.cpp. 
+
 ## Hearing Loss simulation tests
 
 * [testHL-06.cpp](./testHL-06.cpp): this test creates a HearingLoss simulation object which use a Gammatone Multiband expander object for each ear. To the left ear we pass an audiometry test reflecting no loss, while to the right ear we pass an audiometry test reflecting a medium loss for two bands.  

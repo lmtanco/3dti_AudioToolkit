@@ -160,8 +160,8 @@ if (BUILD_HL_TESTS)
     include (CTest)
     enable_testing()
     # Declare tests for Hearing Loss simulation
-    # set(TESTSHL 01 02 03 04 05 06 07 08 09)
-    set(TESTSHL 04 09)  
+    # set(TESTSHL 01 02 03 04 04b 05 05b 06 07 08 09 10 11)
+    set(TESTSHL 05b)  
 
     # Test 09 depends on 04 so make sure 04 is present in the list
     if (NOT "04" IN_LIST TESTSHL AND "09" IN_LIST TESTSHL)
