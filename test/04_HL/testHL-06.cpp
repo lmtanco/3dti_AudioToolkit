@@ -153,7 +153,12 @@ int main(int argc, char const *argv[])
     // Setup the hearing loss simulation with dB SPL for 0 dB FS equal to 100 dB SPL for the sake of testing.
     // The last parameter (bufferSize) is used to initialize the frequency smearing. 
     // Not sure if this is the correct use as I am passing the whole input (the 4 seconds of pink noise)
-    hearingLossSim.Setup(SAMPLINGFREQ, HL_DBS_SPL_FOR_0_DBS_FS, HL_BANDS_NUMBER, inputBuffer.size());    
+    hearingLossSim.Setup(SAMPLINGFREQ, HL_DBS_SPL_FOR_0_DBS_FS, HL_BANDS_NUMBER, inputBuffer.size());
+
+    // Disable temporal distortion: it is enabled by default and, with zero jitter noise,
+    // degenerates into a pure delay of bufferSize/2 samples (2 seconds here), which
+    // contaminates each output with the tail of the previous input (issues #1/#3).
+    hearingLossSim.GetTemporalDistortionSimulator()->DisableTemporalDistortionSimulator(Common::T_ear::BOTH);
 
     // Connect simulator and expanders
     hearingLossSim.SetMultibandExpander(Common::T_ear::LEFT, expander_left);
@@ -187,6 +192,14 @@ int main(int argc, char const *argv[])
         stereoOutputBuffer.left.resize(inputBuffer.size());
         stereoOutputBuffer.right.resize(inputBuffer.size());
         stereoOutputBuffers.push_back(stereoOutputBuffer);
+    }
+
+    // Flush the gammatone filter states of the left expander, polluted by the
+    // single-ear processing above (lines ~80-95), so the stereo loop starts clean.
+    {
+        CMonoBuffer<float> zeroBuffer(inputBuffer.size(), 0.0f);
+        CMonoBuffer<float> dummyOutput(inputBuffer.size(), 0.0f);
+        expander_left->Process(zeroBuffer, dummyOutput);
     }
 
     // Process the stereo buffers
